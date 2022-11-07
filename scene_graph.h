@@ -7,10 +7,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
 #include "scene_node.h"
 #include "resource.h"
 #include "camera.h"
+#include "Light.h"
 
 namespace game {
 
@@ -33,9 +33,8 @@ namespace game {
             void SetBackgroundColor(glm::vec3 color);
             glm::vec3 GetBackgroundColor(void) const;
             
-            
             // Create a scene node from the specified resources
-            SceneNode *CreateNode(std::string node_name, Resource *geometry, Resource *material);
+            SceneNode *CreateNode(std::string node_name, Resource *geometry, Resource *material, Resource *texture = NULL);
             // Add an already-created node
             void AddNode(SceneNode *node);
             // Find a scene node with a specific name
@@ -45,12 +44,10 @@ namespace game {
             std::vector<SceneNode *>::const_iterator end() const;
 
             // Draw the entire scene
-            void Draw(Camera *camera);
+            void Draw(Camera *camera,Light *l);
 
             // Update entire scene
             void Update(void);
-            //delete a node
-            void erase(SceneNode* n);
 
     }; // class SceneGraph
 

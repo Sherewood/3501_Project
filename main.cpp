@@ -1,8 +1,8 @@
 /*
  *
- * A program that demonstrates camera control and a scene graph architecture
+ * A program that demonstrates texturing with normal mapping
  *
- * Copyright (c) 2018-2019 Oliver van Kaick <Oliver.vanKaick@carleton.ca>, David Mould <mould@scs.carleton.ca>
+ * Copyright (c) 2018 Oliver van Kaick <Oliver.vanKaick@carleton.ca>, David Mould <mould@scs.carleton.ca>
  *
  */
 
@@ -17,9 +17,7 @@
 
 // Main function that builds and runs the game
 int main(void){
-
-
-    game::Game app; // Game application 
+    game::Game app; // Game application
 
     try {
         // Initialize game
@@ -33,7 +31,6 @@ int main(void){
     catch (std::exception &e){
         PrintException(e);
     }
-  
 
     return 0;
 }

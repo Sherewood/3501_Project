@@ -11,7 +11,7 @@
 
 #include "resource.h"
 #include "camera.h"
-#include <vector>
+#include "Light.h"
 
 namespace game {
 
@@ -20,7 +20,7 @@ namespace game {
 
         public:
             // Create scene node from given resources
-            SceneNode(const std::string name, const Resource *geometry, const Resource *material);
+            SceneNode(const std::string name, const Resource *geometry, const Resource *material, const Resource *texture = NULL);
 
             // Destructor
             ~SceneNode();
@@ -32,13 +32,11 @@ namespace game {
             glm::vec3 GetPosition(void) const;
             glm::quat GetOrientation(void) const;
             glm::vec3 GetScale(void) const;
-            glm::vec3 GetJoint(void) const;
 
             // Set node attributes
             void SetPosition(glm::vec3 position);
             void SetOrientation(glm::quat orientation);
             void SetScale(glm::vec3 scale);
-            void SetJoint(glm::vec3 joint);
             
             // Perform transformations on node
             void Translate(glm::vec3 trans);
@@ -47,9 +45,7 @@ namespace game {
 
             // Draw the node according to scene parameters in 'camera'
             // variable
-            virtual void Draw(Camera *camera);
-            //Add a node to the scene 
-            void Add(SceneNode* base,  SceneNode* addon);
+            virtual void Draw(Camera *camera, Light *l);
 
             // Update the node
             virtual void Update(void);
@@ -61,6 +57,8 @@ namespace game {
             GLsizei GetSize(void) const;
             GLuint GetMaterial(void) const;
 
+       
+
         private:
             std::string name_; // Name of the scene node
             GLuint array_buffer_; // References to geometry: vertex and array buffers
@@ -68,20 +66,13 @@ namespace game {
             GLenum mode_; // Type of geometry
             GLsizei size_; // Number of primitives in geometry
             GLuint material_; // Reference to shader program
+            GLuint texture_; // Reference to texture resource
             glm::vec3 position_; // Position of node
             glm::quat orientation_; // Orientation of node
             glm::vec3 scale_; // Scale of node
-            std::vector<SceneNode*> children; //vector array holding children nodes 
-            glm::mat4 parent; //reference to Parent transformation of the node
-            glm::vec3 joint; //position where the node rotates on 
-            glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
-            
-            
-           
-            
 
             // Set matrices that transform the node in a shader program
-            void SetupShader(GLuint program);
+            void SetupShader(GLuint program,Light *l);
 
     }; // class SceneNode
 

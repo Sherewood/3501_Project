@@ -1,3 +1,3 @@
-#define MATERIAL_DIRECTORY "C:\\Users\\jyrou\\Documents\\GitHub\\assignment3"
-//#define MATERIAL_DIRECTORY "C:\\Users\\jyrou\\OneDrive\\Email attachments\\Documents\\GitHub\\assignment3" 
+#define MATERIAL_DIRECTORY "E:\\TextureDemo"
+//#define MATERIAL_DIRECTORY "C:\\Users\\jyrou\\Downloads\\TextureDemo\\TextureDemo"
 // change to specify your own location here
