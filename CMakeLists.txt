@@ -1,23 +1,21 @@
-﻿cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 
 # Name of project
-set(PROJ_NAME "SceneGraphDemo")
-project(${PROJ_NAME})
+set(PROJ_NAME TextureMappingDemo)
+project(${PROJ_NAME} C CXX)
 
 # Specify project files: header files and source files
 set(HDRS
-     camera.h game.h resource.h resource_manager.h scene_graph.h scene_node.h
+    asteroid.h camera.h game.h model_loader.h resource.h resource_manager.h scene_graph.h scene_node.h Light.h
 )
  
 set(SRCS
-    camera.cpp game.cpp main.cpp resource.cpp resource_manager.cpp scene_graph.cpp scene_node.cpp material_vp.glsl material_fp.glsl 
+   asteroid.cpp camera.cpp game.cpp main.cpp resource.cpp resource_manager.cpp scene_graph.cpp scene_node.cpp textured_material_fp.glsl textured_material_vp.glsl procedural_vp.glsl procedural_fp.glsl Light.cpp
 )
 
-# Add path name to configuration file
-#configure_file(path_config.h.in path_config.h)
 
-# Add executable based on the header and source files
-add_executable(${PROJ_NAME} ${HDRS} ${SRCS} )
+# Add executable based on the source files
+add_executable(${PROJ_NAME} ${HDRS} ${SRCS})
 
 # Require OpenGL library
 find_package(OpenGL REQUIRED)
@@ -26,7 +24,6 @@ target_link_libraries(${PROJ_NAME} ${OPENGL_gl_LIBRARY})
 
 # Other libraries needed
 set(LIBRARY_PATH C:/Program\ Files/Libraries/Libraries)
-SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_CXX_FLAGS} -lstdc++")
 include_directories(${LIBRARY_PATH}/include)
 if(NOT WIN32)
     find_library(GLEW_LIBRARY GLEW)

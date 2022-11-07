@@ -1,9 +1,9 @@
 # ninja log v5
 3	371	6886155883757603	CMakeFiles/SceneGraphDemo.dir/resource.cpp.obj	daa50e284b6c034a
-0	691	6886155886930206	CMakeFiles/SceneGraphDemo.dir/camera.cpp.obj	6be83c9316e34de8
-8	732	6886155887360229	CMakeFiles/SceneGraphDemo.dir/main.cpp.obj	a3c53edde81296f3
 14	759	6886155887610288	CMakeFiles/SceneGraphDemo.dir/scene_graph.cpp.obj	b6bd3b8372b3604e
 5	772	6886155887750331	CMakeFiles/SceneGraphDemo.dir/resource_manager.cpp.obj	1066af1e3d4cedca
+0	691	6886155886930206	CMakeFiles/SceneGraphDemo.dir/camera.cpp.obj	6be83c9316e34de8
 17	775	6886155887790333	CMakeFiles/SceneGraphDemo.dir/scene_node.cpp.obj	8f932e70bc8177c0
-11	778	6886155887820334	CMakeFiles/SceneGraphDemo.dir/game.cpp.obj	fe9ab5303cc73e7b
+8	732	6886155887360229	CMakeFiles/SceneGraphDemo.dir/main.cpp.obj	a3c53edde81296f3
 779	1640	6886155896033160	SceneGraphDemo_d.exe	4599f9375a6cec37
+11	778	6886155887820334	CMakeFiles/SceneGraphDemo.dir/game.cpp.obj	fe9ab5303cc73e7b

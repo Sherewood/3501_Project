@@ -32,12 +32,14 @@ namespace game {
 
             // Methods to create specific resources
             // Create the geometry for a torus and add it to the list of resources
-            void CreateTorus(std::string object_name, float loop_radius = 0.6, float circle_radius = 0.2, int num_loop_samples = 90, int num_circle_samples = 30);
+			void CreateTorus(std::string object_name, float loop_radius = 0.6, float circle_radius = 0.2, int num_loop_samples = 90, int num_circle_samples = 30);
+			void CreateSeamlessTorus(std::string object_name, float loop_radius = 0.6, float circle_radius = 0.2, int num_loop_samples = 90, int num_circle_samples = 30);
 			// Create the geometry for a sphere
-			void CreateSphere(std::string object_name, float radius = 0.6, int num_samples_theta = 90, int num_samples_phi = 45);
+            void CreateSphere(std::string object_name, float radius = 0.6, int num_samples_theta = 90, int num_samples_phi = 45);
+			void CreateCylinder(std::string object_name, float height = 1.0, float circle_radius = 0.6, int num_loop_samples = 90, int num_circle_samples = 30);
 
-			// Create the geometry for a cylinder
-            void CreateCylinder(std::string object_name, float height = 1.0, float radius = 0.6, int num_samples_theta = 90, int num_samples_phi = 45);
+			// "Wall", a flat object
+            void CreateWall(std::string object_name);
 
         private:
             // List storing all resources
@@ -48,6 +50,10 @@ namespace game {
             void LoadMaterial(const std::string name, const char *prefix);
             // Load a text file into memory (could be source code)
             std::string LoadTextFile(const char *filename);
+            // Load a texture from an image file: png, jpg, etc.
+            void LoadTexture(const std::string name, const char *filename);
+            // Loads a mesh in obj format
+            void LoadMesh(const std::string name, const char *filename);
 
     }; // class ResourceManager
 

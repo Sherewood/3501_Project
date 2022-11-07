@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "game.h"
+
 #include "path_config.h"
 
 namespace game {
@@ -11,7 +12,7 @@ namespace game {
 // They are written here as global variables, but ideally they should be loaded from a configuration file
 
 // Main window settings
-const std::string window_title_g = "Tree Field";
+const std::string window_title_g = "Demo";
 const unsigned int window_width_g = 800;
 const unsigned int window_height_g = 600;
 const bool window_full_screen_g = false;
@@ -19,23 +20,18 @@ const bool window_full_screen_g = false;
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
-float camera_fov_g = 60.0; // Field-of-view of camera (degrees)
+float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
-glm::vec3 camera_position_g(0.0, -200.0, 900.0);
-glm::vec3 camera_look_at_g(0.0, 0.0, -1);
+glm::vec3 camera_position_g(0., 0., 10.0);
+glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
-
-float  num_stumps = 5;
-float num_trunks = 5;
-float num_branches = 10;
-//innner counter for Bullets 
-
 
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
 
 Game::Game(void){
+    
 
     // Don't do work in the constructor, leave it for the Init() function
 }
@@ -71,7 +67,7 @@ void Game::InitWindow(void){
         throw(GameException(std::string("Could not create window")));
     }
 
-    // Make the window's context the current 
+    // Make the window's context the current one
     glfwMakeContextCurrent(window_);
 
     // Initialize the GLEW library to access OpenGL extensions
@@ -85,6 +81,7 @@ void Game::InitWindow(void){
 
 
 void Game::InitView(void){
+
 
     // Set up z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -116,17 +113,47 @@ void Game::InitEventHandlers(void){
 
 void Game::SetupResources(void){
 
-    // Create a simple sphere to represent the Trees
-    resman_.CreateTorus("SimpleTorus", 2.0, 1.0, 10, 10);
-    resman_.CreateCylinder("Stump", 30, 40, 90, 45);
-    resman_.CreateCylinder("Trunk", 10, 10, 90, 45);
-    resman_.CreateCylinder("Branch", 30, 5, 90, 45);
+    // Create geometry of the objects
+	resman_.CreateTorus("SimpleTorusMesh", 0.8, 0.35, 30, 30);
+	resman_.CreateSeamlessTorus("SeamlessTorusMesh", 0.8, 0.35, 80, 80);
+	resman_.CreateWall("FlatSurface");
+	resman_.CreateCylinder("SimpleCylinderMesh", 2.0, 0.4, 30, 30);
+    resman_.CreateSphere("SimpleSphere");
+    // Load shader for texture mapping
+	std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
+	resman_.LoadResource(Material, "TextureShader", filename.c_str());
+
+	// shader for corona effect
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/corona");
+	resman_.LoadResource(Material, "Procedural", filename.c_str());
+
+	// shader for checkerboard effect
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/rectangle");
+	resman_.LoadResource(Material, "Blocks", filename.c_str());
+
+    //shader for checkerboard
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/procedural");
+    resman_.LoadResource(Material, "prod", filename.c_str());
+
+    //new shader
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/new_shd");
+    resman_.LoadResource(Material, "Nova", filename.c_str());
 
 
+	// shader for 3-term lighting effect
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
+	resman_.LoadResource(Material, "Lighting", filename.c_str());
 
-    // Load material to be applied to Trees
-    std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/material");
-    resman_.LoadResource(Material, "ObjectMaterial", filename.c_str());
+	// Load texture to be used on the object
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/rocky.png");
+	resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
+
+
+	// Load texture to be used on the object
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/download.jpg");
+	resman_.LoadResource(Texture, "WoodTexture", filename.c_str());
+	
+
 }
 
 
@@ -135,31 +162,48 @@ void Game::SetupScene(void){
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
 
-    // Create a Tree
-    PaintATree();
-
+    // Create an object for showing the texture
+	// instance contains identifier, geometry, shader, and texture
 	
+	game::SceneNode *mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
+    game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
+    game::SceneNode* canvas = CreateInstance("Wall", "FlatSurface", "prod", "Blocks");
+    game::SceneNode* newShader = CreateInstance("Object", "SeamlessTorusMesh", "Nova", "Blocks");
+	mytorus->Translate(glm::vec3(-5, 0, -10));
+    canvas->Translate(glm::vec3(0, 0, -10));
+    newShader->Translate(glm::vec3(5, 0, -10));
+    light->Translate(glm::vec3(5, 0, -10));
 
+		
 }
 
 
 void Game::MainLoop(void){
-
+	float bleh = 0;
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
         // Animate the scene
         if (animating_){
             static double last_time = 0;
             double current_time = glfwGetTime();
-            if ((current_time - last_time) > 0.05){
-                scene_.Update();
+            if ((current_time - last_time) > 0.01)
+			{
+                //scene_.Update();
+
+                // Animate the scene
+                SceneNode *node = scene_.GetNode("MyTorus1");
+				glm::quat rotation = glm::angleAxis(0.95f*glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
+               node->Rotate(rotation);
+               SceneNode* nodel = scene_.GetNode("Lightbulb");
+               nodel->Translate(glm::vec3(cos(current_time), 0.0,  -sin(current_time) ));
+               light.Update(nodel->GetPosition());
                 last_time = current_time;
+				
             }
         }
-     // test print pls ignore   std::cout << "easdasd" << std::endl;
-        //start of Bullet updating
+
         // Draw the scene
-        scene_.Draw(&camera_);
+        scene_.Draw(&camera_,&light);
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
@@ -243,128 +287,71 @@ Game::~Game(){
     glfwTerminate();
 }
 
-void Game::PaintATree() {
+
+Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
+
     // Get resources
-   Resource* geom = resman_.GetResource("Stump");
-    if (!geom) {
-        throw(GameException(std::string("Could not find resource \"") + "Stump" + std::string("\"")));
+    Resource *geom = resman_.GetResource(object_name);
+    if (!geom){
+        throw(GameException(std::string("Could not find resource \"")+object_name+std::string("\"")));
     }
-    Resource* geom_tr = resman_.GetResource("Trunk");
-    if (!geom) {
-        throw(GameException(std::string("Could not find resource \"") + "Trunk" + std::string("\"")));
+
+    Resource *mat = resman_.GetResource(material_name);
+    if (!mat){
+        throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
     }
-    Resource* geom_br = resman_.GetResource("Branch");
-    if (!geom) {
-        throw(GameException(std::string("Could not find resource \"") + "Stump" + std::string("\"")));
-    }
-    Resource* mat = resman_.GetResource("ObjectMaterial");
-    if (!mat) {
-        throw(GameException(std::string("Could not find resource \"") + "ObjectMaterial" + std::string("\"")));
-    }
-    //Creates the root node and gives it a position
-     SceneNode *Base= new SceneNode("Root",geom,mat);
-     Base->SetPosition(glm::vec3(0,-100,0));
-     Base->SetScale(glm::vec3(1, 1, 1));
-     Base->SetJoint(glm::vec3(0, 0, 0));
-     
-   for (int i = 0; i<num_stumps; i++)
-    {
+
+    // Create asteroid instance
+    Asteroid *ast = new Asteroid(entity_name, geom, mat);
+    scene_.AddNode(ast);
+    return ast;
+}
+
+
+void Game::CreateAsteroidField(int num_asteroids){
+
+    // Create a number of asteroid instances
+    for (int i = 0; i < num_asteroids; i++){
+        // Create instance name
         std::stringstream ss;
         ss << i;
         std::string index = ss.str();
-        std::string name = "Stump" + index;
-        SceneNode *create= new SceneNode(name,geom,mat);
-        create->SetPosition(glm::vec3(0,30,0));
-        create->SetScale(glm::vec3(1, 1, 1));
-        create->SetJoint(glm::vec3(0, 30, 0));
-        Base->Add(Base,create);
+        std::string name = "AsteroidInstance" + index;
+
+        // Create asteroid instance
+        Asteroid *ast = CreateAsteroidInstance(name, "SimpleSphereMesh", "ObjectMaterial");
+
+        // Set attributes of asteroid: random position, orientation, and
+        // angular momentum
+        ast->SetPosition(glm::vec3(-300.0 + 600.0*((float) rand() / RAND_MAX), -300.0 + 600.0*((float) rand() / RAND_MAX), 600.0*((float) rand() / RAND_MAX)));
+        ast->SetOrientation(glm::normalize(glm::angleAxis(glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
+        ast->SetAngM(glm::normalize(glm::angleAxis(0.05f*glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
     }
-        //should create several stump objects, give them position, scale,and a joint and then add them to the SceneNode
+}
 
-    for (int j = 0; j<num_trunks; j++)
-    {
-        std::stringstream ss;
-        ss << j;
-        std::string index = ss.str();
-        std::string name = "Trunk" + index;
-         SceneNode *trunk=new SceneNode(name,geom,mat);
-        trunk->SetPosition(glm::vec3(0,30, 0));
-        trunk->SetJoint(glm::vec3(0, 30, 0));
-        trunk->SetScale(glm::vec3(1,1,1));
-        Base->Add(Base,trunk);
+
+SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
+
+    Resource *geom = resman_.GetResource(object_name);
+    if (!geom){
+        throw(GameException(std::string("Could not find resource \"")+object_name+std::string("\"")));
     }
-        //should create several trunk objects, give them the same stuff as what is above, and add them to the SceneNode
-   for (int z = 0; z<num_branches; z++)
-    {
-        std::stringstream ss;
-        ss << z;
-        std::string index = ss.str();
-        std::string name = "Branch" + index;
-        SceneNode* branch = new SceneNode(name, geom_br, mat);
-        if (z<4){ 
-            branch->SetPosition(glm::vec3(-30+(20*z), 30, 0));
-            branch->SetJoint(glm::vec3(-30 + (20 * z), 30, 0));
 
-        }
-        else {
-            if (z == 4)
-            {
-                branch->SetPosition(glm::vec3(-30, 30, 0));
-               // float angle = 20*(z);
-                branch->SetJoint(glm::vec3(-30, 30, 0));
-               // glm::quat myquat = glm::angleAxis(angle, glm::normalize(glm::vec3(5,5,0)));
-               // branch->SetOrientation(myquat);
-            }
-            else if (z == 5)
-            {
-                branch->SetPosition(glm::vec3(-10, 30, 0));
-                branch->SetJoint(glm::vec3(0, 30, 0));
+    Resource *mat = resman_.GetResource(material_name);
+    if (!mat){
+        throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
+    }
 
-            }
-            else if (z == 6)
-            {
-                branch->SetPosition(glm::vec3(0, 30, 0));
-                branch->SetJoint(glm::vec3(0,30, 0));
-               // float angle = 20 * (1 + z);
-                //branch->SetJoint(glm::vec3(-30, 300, -20));
-                //glm::quat myquat = glm::angleAxis(angle, glm::normalize(glm::vec3(0, -5, 0)));
-                //branch->SetOrientation(myquat);
-            }
-            else if (z == 7)
-            {
-                branch->SetPosition(glm::vec3(0,30, 0));
-                branch->SetJoint(glm::vec3(0, 30, 0));
-                //float angle = 20 * (1 + z);
-                //branch->SetJoint(glm::vec3(-30, 300, -20));
-                //glm::quat myquat = glm::angleAxis(angle, glm::normalize(glm::vec3(0, -5, 0)));
-                //branch->SetOrientation(myquat);
-            }
-            else if (z == 8)
-            {
-                branch->SetPosition(glm::vec3(0, 30, 0));
-                branch->SetJoint(glm::vec3(0, 30, 0));
-                //float angle = 20 * (1 + z);
-                //branch->SetJoint(glm::vec3(-30, 300, -20));
-                //glm::quat myquat = glm::angleAxis(angle, glm::normalize(glm::vec3(0, -5, 0)));
-                ///branch->SetOrientation(myquat);
-            }
-            else if (z == 9)
-            {
-                branch->SetPosition(glm::vec3(10, 30, 0));
-                branch->SetJoint(glm::vec3(10, 30, 0));
-                //float angle = 20 * (1 + z);
-                //branch->SetJoint(glm::vec3(-30, 150, -20));
-                //glm::quat myquat = glm::angleAxis(angle, glm::normalize(glm::vec3(0, 5, 0)));
-                //branch->SetOrientation(myquat);
-               
-            }
-           
+    Resource *tex = NULL;
+    if (texture_name != ""){
+        tex = resman_.GetResource(texture_name);
+        if (!tex){
+            throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
         }
-        
-        branch->SetScale(glm::vec3(1, 1.5, 1));
-        Base->Add(Base, branch);
-    }///should create several branch objects which should be placed near to the tree to look as if it is connected
-    scene_.AddNode(Base);
+    }
+
+    SceneNode *scn = scene_.CreateNode(entity_name, geom, mat, tex);
+    return scn;
 }
 
 } // namespace game

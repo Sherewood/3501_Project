@@ -1,5 +1,6 @@
 #include <stdexcept>
 #define GLM_FORCE_RADIANS
+
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -56,6 +57,7 @@ void Camera::Rotate(glm::quat rot){
 
 glm::vec3 Camera::GetForward(void) const {
 
+	
     glm::vec3 current_forward = orientation_ * forward_;
     return -current_forward; // Return -forward since the camera coordinate system points in the opposite direction
 }
@@ -63,39 +65,42 @@ glm::vec3 Camera::GetForward(void) const {
 
 glm::vec3 Camera::GetSide(void) const {
 
-    glm::vec3 current_side = orientation_* side_; // obviously wrong
+    glm::vec3 current_side = orientation_ * side_;
     return current_side;
 }
 
 
 glm::vec3 Camera::GetUp(void) const {
 
-    glm::vec3 current_up = orientation_ * -side_; // obviously wrong
-    
+    glm::vec3 current_forward = orientation_ * forward_;
+    glm::vec3 current_side = orientation_ * side_;
+    glm::vec3 current_up = glm::cross(current_forward, current_side);
+    current_up = glm::normalize(current_up);
     return current_up;
 }
 
 
 void Camera::Pitch(float angle){
-    glm::quat myquat = glm::angleAxis(angle, glm::vec3(1, 0, 0));
-   
-    Rotate(myquat);
 
+    glm::quat rotation = glm::angleAxis(angle, GetSide());
+    orientation_ = rotation * orientation_;
+    orientation_ = glm::normalize(orientation_);
 }
 
 
 void Camera::Yaw(float angle){
-    glm::quat myquat = glm::angleAxis(angle, glm::vec3(0, 1, 0));
 
-    Rotate(myquat);
+    glm::quat rotation = glm::angleAxis(angle, GetUp());
+    orientation_ = rotation * orientation_;
+    orientation_ = glm::normalize(orientation_);
 }
 
 
 void Camera::Roll(float angle){
-    glm::quat myquat = glm::angleAxis(angle, glm::vec3(0, 0, 1));
 
-    Rotate(myquat);
-
+    glm::quat rotation = glm::angleAxis(angle, GetForward());
+    orientation_ = rotation * orientation_;
+    orientation_ = glm::normalize(orientation_);
 }
 
 
@@ -110,6 +115,7 @@ void Camera::SetView(glm::vec3 position, glm::vec3 look_at, glm::vec3 up){
 
     // Reset orientation and position of camera
     position_ = position;
+//    orientation_ = glm::identity<glm::quat>();
     orientation_ = glm::quat();
 }
 
