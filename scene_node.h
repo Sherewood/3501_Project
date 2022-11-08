@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #define GLM_FORCE_RADIANS
+#include <vector>
 #include <glm/gtc/quaternion.hpp>
 
 #include "resource.h"
@@ -57,6 +58,8 @@ namespace game {
             GLsizei GetSize(void) const;
             GLuint GetMaterial(void) const;
 
+            //attachment 
+            void Attach(SceneNode* parent, float level);
        
 
         private:
@@ -70,6 +73,11 @@ namespace game {
             glm::vec3 position_; // Position of node
             glm::quat orientation_; // Orientation of node
             glm::vec3 scale_; // Scale of node
+            std::vector<SceneNode*> children;
+            glm::mat4 parent; //reference to Parent transformation of the node
+            glm::vec3 joint; //position where the node rotates on 
+            glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
+
 
             // Set matrices that transform the node in a shader program
             void SetupShader(GLuint program,Light *l);

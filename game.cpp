@@ -164,16 +164,18 @@ void Game::SetupScene(void){
 
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
-	
-	game::SceneNode *mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
+    light->Translate(glm::vec3(5, 0, -10));
+    initalizeMap();
+    /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
+  
     game::SceneNode* canvas = CreateInstance("Wall", "FlatSurface", "prod", "Blocks");
     game::SceneNode* newShader = CreateInstance("Object", "SeamlessTorusMesh", "Nova", "Blocks");
 	mytorus->Translate(glm::vec3(-5, 0, -10));
     canvas->Translate(glm::vec3(0, 0, -10));
     newShader->Translate(glm::vec3(5, 0, -10));
-    light->Translate(glm::vec3(5, 0, -10));
-
+    
+    */
 		
 }
 
@@ -191,9 +193,9 @@ void Game::MainLoop(void){
                 //scene_.Update();
 
                 // Animate the scene
-                SceneNode *node = scene_.GetNode("MyTorus1");
-				glm::quat rotation = glm::angleAxis(0.95f*glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
-               node->Rotate(rotation);
+          //      SceneNode *node = scene_.GetNode("MyTorus1");
+	//			glm::quat rotation = glm::angleAxis(0.95f*glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
+     //          node->Rotate(rotation);
                SceneNode* nodel = scene_.GetNode("Lightbulb");
                nodel->Translate(glm::vec3(cos(current_time), 0.0,  -sin(current_time) ));
                light.Update(nodel->GetPosition());
@@ -352,6 +354,25 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
 
     SceneNode *scn = scene_.CreateNode(entity_name, geom, mat, tex);
     return scn;
+}
+void Game::initalizeMap() {
+    //inital map
+    SceneNode* entry = CreateInstance("EntryWay", "SimpleCylinderMesh", "Lighting", "RockyTexture");
+    scene_.AddNode(entry);
+    entry->Translate(glm::vec3(0, 0, 0));
+    SceneNode* sides = CreateInstance("Tunnel_1", "SimpleCylinderMesh", "Lighting", "RockyTexture");
+    sides->Translate(glm::vec3(.8, 0, 0));
+    sides->SetOrientation(glm::normalize(glm::angleAxis(45.0f * glm::pi<float>() / 180.0f, glm::vec3(0,0,1))));
+    sides->Attach(entry, 0);
+    SceneNode* sides_= CreateInstance("Tunnel_2", "SimpleCylinderMesh", "Lighting", "RockyTexture");
+    sides_->Translate(glm::vec3(-.8, 0, 0));
+    sides_->SetOrientation(glm::normalize(glm::angleAxis(90.0f * glm::pi<float>() / 180.0f, glm::vec3(0, 0, 4))));
+    sides_->Attach(entry, 0);
+    SceneNode* control = CreateInstance("Control_Room", "SimpleCylinderMesh", "Lighting", "RockyTexture");
+    control->Translate(glm::vec3(2, 0, 0));
+    control->Attach(entry, 1);
+
+
 }
 
 } // namespace game

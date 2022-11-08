@@ -139,6 +139,18 @@ GLuint SceneNode::GetMaterial(void) const {
 
     return material_;
 }
+void SceneNode::Attach(SceneNode* parent_node, float level)
+{
+    if (level == 0)
+    {
+        parent = parent_node->world_transformation;
+        parent_node->children.push_back(this);
+    }
+    else
+    {
+        Attach(parent_node->children[0], level - 1);
+    }
+}
 
 //carries the light pointer in 
 void SceneNode::Draw(Camera *camera,Light *light){
@@ -195,8 +207,11 @@ void SceneNode::SetupShader(GLuint program,Light *l){
     glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
     glm::mat4 rotation = glm::mat4_cast(orientation_);
     glm::mat4 translation = glm::translate(glm::mat4(1.0), position_);
+   // glm::mat4 orbit = (glm::translate(glm::mat4(1.0), -joint) * glm::mat4_cast(myquat) * glm::translate(glm::mat4(1.0), joint)); //orbit equation 
 	glm::mat4 orbit = glm::mat4(1.0); // identity -- left out for now
 	glm::mat4 transf = translation * orbit * rotation * scaling;
+    transf = parent * transf;
+    world_transformation = transf;
 
     GLint world_mat = glGetUniformLocation(program, "world_mat");
     glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf));
