@@ -165,7 +165,7 @@ void Game::SetupScene(void){
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
-    light->Translate(glm::vec3(5, 0, -10));
+    light->Translate(glm::vec3(-5, 1, -10));
     initalizeMap();
     /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   

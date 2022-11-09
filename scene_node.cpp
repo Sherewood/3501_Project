@@ -216,7 +216,7 @@ void SceneNode::SetupShader(GLuint program,Light *l){
     GLint world_mat = glGetUniformLocation(program, "world_mat");
     glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf));
     //Lighting vector
-    GLint light_vec = glGetUniformLocation(program, "light_vec");
+    GLint light_vec = glGetUniformLocation(program, "light_position");
     glUniform3f(light_vec,l->GetPosition().x, l->GetPosition().y, l->GetPosition().z);
 
     // Normal matrix
