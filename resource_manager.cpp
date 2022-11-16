@@ -1036,4 +1036,65 @@ void ResourceManager::CreateWall(std::string object_name){
     AddResource(Mesh, object_name, vbo, ebo, 2 * 3);
 }
 
+void ResourceManager::CreateSparkParticles(std::string object_name, glm::vec3 pos, int num_particles) {
+
+    GLfloat* particle = NULL;
+    const int particle_att = 11;
+
+    try {
+        particle = new GLfloat[num_particles * particle_att];
+    }
+    catch (std::exception& e) {
+        throw e;
+    }
+
+    float trad = 0.2; // Defines the starting point of the particles along the normal
+    float maxspray = 1.0; // This is how much we allow the points to deviate from the sphere
+    float u, v, w, theta, phi, spray; // Work variables
+
+    for (int i = 0; i < num_particles; i++) {
+
+        // Get three random numbers
+
+        u = 1.0;
+        v = ((double)rand() / (RAND_MAX));
+        w = ((double)rand() / (RAND_MAX));
+        trad = ((double)rand() / (RAND_MAX / 0.3));
+
+        // Use u to define the angle theta along one direction of the sphere
+        theta = u * 2.0 * glm::pi<float>();
+        // Use v to define the angle phi along the other direction of the sphere
+        phi = acos(2.0 * v - 1.0);
+        // Use w to define how much we can deviate from the surface of the sphere (change of radius)
+        spray = maxspray * pow((float)w, (float)(1.0 / 3.0)); // Cubic root of w
+
+        // Define the normal and point based on theta, phi and the spray; normal will be used as velocity
+        glm::vec3 normal(spray * cos(theta) * sin(phi) + 1, spray * sin(theta) * sin(phi), spray * cos(phi) / 10);
+        glm::vec3 position = pos;
+        glm::vec3 color(i / (float)num_particles, trad, 1.0 - (i / (float)num_particles)); // We can use the color for debug, if needed
+        /*glm::vec2 texture_coord;*/
+
+        // Add vectors to the data buffer
+        for (int k = 0; k < 3; k++) {
+            particle[i * particle_att + k] = position[k];
+            particle[i * particle_att + k + 3] = normal[k];
+            particle[i * particle_att + k + 6] = color[k];
+        }
+        ////particle[i * particle_att + 9] = texture_coord[0];
+        ////particle[i * particle_att + 10] = texture_coord[1];
+    }
+
+    // Create OpenGL buffer and copy data
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, num_particles * particle_att * sizeof(GLfloat), particle, GL_STATIC_DRAW);
+
+    // Free data buffers
+    delete[] particle;
+
+    // Create resource
+    AddResource(PointSet, object_name, vbo, 0, num_particles);
+}
+
 } // namespace game;

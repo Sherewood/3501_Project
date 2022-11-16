@@ -38,6 +38,8 @@ namespace game {
             void CreateSphere(std::string object_name, float radius = 0.6, int num_samples_theta = 90, int num_samples_phi = 45);
 			void CreateCylinder(std::string object_name, float height = 1.0, float circle_radius = 0.6, int num_loop_samples = 90, int num_circle_samples = 30);
 
+            void CreateSparkParticles(std::string object_name, glm::vec3, int num_particles = 200);
+
 			// "Wall", a flat object
             void CreateWall(std::string object_name);
 
