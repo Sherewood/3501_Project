@@ -247,29 +247,17 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_RIGHT){
         game->camera_.Yaw(-rot_factor);
     }
-    if (key == GLFW_KEY_S){
-        game->camera_.Roll(-rot_factor);
+    if (key == GLFW_KEY_W) {
+        game->camera_.Translate(game->camera_.GetForward() * trans_factor);
     }
-    if (key == GLFW_KEY_X){
-        game->camera_.Roll(rot_factor);
+    if (key == GLFW_KEY_S){
+        game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
     }
     if (key == GLFW_KEY_A){
-        game->camera_.Translate(game->camera_.GetForward()*trans_factor);
+        game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
     }
-    if (key == GLFW_KEY_Z){
-        game->camera_.Translate(-game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_J){
-        game->camera_.Translate(-game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_L){
-        game->camera_.Translate(game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_I){
-        game->camera_.Translate(game->camera_.GetUp()*trans_factor);
-    }
-    if (key == GLFW_KEY_K){
-        game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
+    if (key == GLFW_KEY_D) {
+        game->camera_.Translate(game->camera_.GetSide() * trans_factor);
     }
 }
 
