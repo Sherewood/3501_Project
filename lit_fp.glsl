@@ -1,4 +1,4 @@
-#version 130
+#version 400
 
 // Attributes passed from the vertex shader
 in vec3 position_interp;

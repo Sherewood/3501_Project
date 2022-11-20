@@ -164,7 +164,7 @@ void ResourceManager::CreateCylinder(std::string object_name, float height, floa
 	const GLuint face_num = num_height_samples * (num_circle_samples - 1) * 2 + 2 * num_circle_samples; // two extra rings worth for top and bottom
 
 																										// Number of attributes for vertices and faces
-	const int vertex_att = 11;  // 11 attributes per vertex: 3D position (3), 3D normal (3), RGB color (3), 2D texture coordinates (2)
+	const int vertex_att = 12;  // 11 attributes per vertex: 3D position (3), 3D normal (3), RGB color (3), 2D texture coordinates (2)
 	const int face_att = 3; // Vertex indices (3)
 
 							// Data buffers for the shape
@@ -324,7 +324,7 @@ void ResourceManager::CreateTorus(std::string object_name, float loop_radius, fl
 	const GLuint face_num = num_loop_samples * num_circle_samples * 2;
 
 	// Number of attributes for vertices and faces
-	const int vertex_att = 11;
+	const int vertex_att = 12;
 	const int face_att = 3;
 
 	// Data buffers for the torus
@@ -432,7 +432,7 @@ void ResourceManager::CreateSeamlessTorus(std::string object_name, float loop_ra
     const GLuint face_num = num_loop_samples*num_circle_samples*2;
 
     // Number of attributes for vertices and faces
-    const int vertex_att = 11;
+    const int vertex_att = 12;
     const int face_att = 3;
 
     // Data buffers for the torus
@@ -540,7 +540,7 @@ void ResourceManager::CreateSphere(std::string object_name, float radius, int nu
     const GLuint face_num = num_samples_theta*(num_samples_phi-1)*2;
 
     // Number of attributes for vertices and faces
-    const int vertex_att = 11;
+    const int vertex_att = 12;
     const int face_att = 3;
 
     // Data buffers 
@@ -824,7 +824,7 @@ void ResourceManager::LoadMesh(const std::string name, const char *filename){
     // normals/texture coordinates are not consistent over the mesh
 
     // Number of attributes for vertices and faces
-    const int vertex_att = 11;
+    const int vertex_att = 12;
     const int face_att = 3;
 
     // Create OpenGL buffers and copy data
@@ -1026,7 +1026,7 @@ void ResourceManager::CreateWall(std::string object_name){
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, 4 * 11 * sizeof(GLfloat), vertex, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 4 * 12 * sizeof(GLfloat), vertex, GL_STATIC_DRAW);
 
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -1096,5 +1096,143 @@ void ResourceManager::CreateSparkParticles(std::string object_name, glm::vec3 po
     // Create resource
     AddResource(PointSet, object_name, vbo, 0, num_particles);
 }
+void ResourceManager::CreateSphereParticles(std::string object_name, int num_particles) {
 
+    // Create a set of points which will be the particles
+    // This is similar to drawing a sphere: we will sample points on a sphere, but will allow them to also deviate a bit from the sphere along the normal (change of radius)
+
+    // Data buffer
+    GLfloat* particle = NULL;
+
+    // Number of attributes per particle: position (3), normal (3), and color (3), texture coordinates (2)
+    const int particle_att = 12;
+
+    // Allocate memory for buffer
+    try {
+        particle = new GLfloat[num_particles * particle_att];
+    }
+    catch (std::exception& e) {
+        throw e;
+    }
+
+    float trad = 0.1; // Defines the starting point of the particles along the normal
+    float maxspray = 0.1; // This is how much we allow the points to deviate from the sphere
+    float u, v, w, theta, phi, spray, phase; // Work variables
+    float cycle_length = 3;
+
+    for (int i = 0; i < num_particles; i++) {
+
+        // Get three random numbers
+        u = ((double)rand() / (RAND_MAX));
+        v = ((double)rand() / (RAND_MAX));
+        w = ((double)rand() / (RAND_MAX));
+
+        // Use u to define the angle theta along one direction of the sphere
+        theta = rand() * u * 2.0 * glm::pi<float>();
+        // Use v to define the angle phi along the other direction of the sphere
+        phi = rand() * acos(2.0 * v - 1.0);
+        // Use w to define how much we can deviate from the surface of the sphere (change of radius)
+        spray = maxspray * pow((float)w, (float)(1.0 / 3.0)); // Cubic root of w
+
+        // Define the normal and point based on theta, phi and the spray; normal will be used as velocity
+        glm::vec3 normal(spray * cos(theta) * sin(phi), spray * sin(theta) * sin(phi), spray * cos(phi));
+        glm::vec3 position(normal.x * trad, normal.y * trad, normal.z * trad);
+        glm::vec3 color(i / (float)num_particles, 0.0, 1.0 - (i / (float)num_particles)); // We can use the color for debug, if needed
+        phase = (rand() % (int)(cycle_length + 1 - 0) + 0);
+        //      glm::vec2 vertex_coord = glm::vec2(((float)i) / ((float)num_particles), 1.0 - ((float)i) / ((float)num_particles));
+              // Add vectors to the data buffer
+        for (int k = 0; k < 3; k++) {
+            particle[i * particle_att + k] = position[k];
+            particle[i * particle_att + k + 3] = normal[k];
+            particle[i * particle_att + k + 6] = color[k];
+
+        }
+        particle[i * particle_att + 9] = 0;
+        particle[i * particle_att + 10] = 0;
+        particle[i * particle_att + 11] = phase;
+    }
+
+    // Create OpenGL buffer and copy data
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, num_particles * particle_att * sizeof(GLfloat), particle, GL_STATIC_DRAW);
+
+    // Free data buffers
+    delete[] particle;
+
+    // Create resource
+    AddResource(PointSet, object_name, vbo, 0, num_particles);
+}
+//create new instance of sparks 
+void ResourceManager::CreateSphereDustParticles(std::string object_name, int num_particles) {
+
+    // Create a set of points which will be the particles
+    // This is similar to drawing a sphere: we will sample points on a sphere, but will allow them to also deviate a bit from the sphere along the normal (change of radius)
+
+    // Data buffer
+    GLfloat* particle = NULL;
+
+    // Number of attributes per particle: position (3), normal (3), and color (3), texture coordinates (2)
+    const int particle_att = 12;
+
+    // Allocate memory for buffer
+    try {
+        particle = new GLfloat[num_particles * particle_att];
+    }
+    catch (std::exception& e) {
+        throw e;
+    }
+
+    float trad = 30; // Defines the starting point of the particles along the normal
+    float maxspray = .5; // This is how much we allow the points to deviate from the sphere
+    float u, v, w, theta, phi, spray, phase; // Work variables
+    float cycle_lenght = 10;
+    for (int i = 0; i < num_particles; i++) {
+
+        // Get three random numbers
+        u = ((double)rand() / (RAND_MAX));
+        v = ((double)rand() / (RAND_MAX));
+        w = ((double)rand() / (RAND_MAX));
+
+        // Use u to define the angle theta along one direction of the sphere
+        theta = u * 5 * glm::pi<float>();
+        // Use v to define the angle phi along the other direction of the sphere
+        phi = acos(2 * v - 1.0);
+        // Use w to define how much we can deviate from the surface of the sphere (change of radius)
+        spray = maxspray * pow((float)w, (float)(1.0 / 3.0)); // Cubic root of w
+
+        // Define the normal and point based on theta, phi and the spray; normal will be used as velocity
+        glm::vec3 normal(((double)rand() / (RAND_MAX)) * (spray * cos(theta) * sin(phi)), ((double)rand() / (RAND_MAX)) * (spray * sin(theta) * sin(phi)), ((double)rand() / (RAND_MAX)) * spray * cos(phi));
+        glm::vec3 position(normal.x * trad, normal.y * (trad), normal.z * trad);
+        glm::vec3 color(i / (float)num_particles, 0.0, 1.0 - (i / (float)num_particles)); // We can use the color for debug, if needed
+        phase = (rand() % (int)(cycle_lenght + 1 - 0) + 0);
+
+
+        // Add vectors to the data buffer
+        for (int k = 0; k < 3; k++) {
+            particle[i * particle_att + k] = position[k];
+            particle[i * particle_att + k + 3] = normal[k];
+            particle[i * particle_att + k + 6] = color[k];
+
+
+        }
+        particle[i * particle_att + 9] = 0;
+        particle[i * particle_att + 10] = 0;
+        particle[i * particle_att + 11] = phase;
+
+    }
+
+    // Create OpenGL buffer and copy data
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, num_particles * particle_att * sizeof(GLfloat), particle, GL_STATIC_DRAW);
+
+    // Free data buffers
+    delete[] particle;
+
+    // Create resource
+    AddResource(PointSet, object_name, vbo, 0, num_particles);
+}
 } // namespace game;

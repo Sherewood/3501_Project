@@ -42,6 +42,8 @@ namespace game {
 
 			// "Wall", a flat object
             void CreateWall(std::string object_name);
+            void CreateSphereDustParticles(std::string object_name, int num_particles);
+            void CreateSphereParticles(std::string object_name, int num_particles);
 
         private:
             // List storing all resources

@@ -188,20 +188,23 @@ void SceneNode::SetupShader(GLuint program,Light *l){
 	
     // Set attributes for shaders
     GLint vertex_att = glGetAttribLocation(program, "vertex");
-    glVertexAttribPointer(vertex_att, 3, GL_FLOAT, GL_FALSE, 11*sizeof(GLfloat), 0);
+    glVertexAttribPointer(vertex_att, 3, GL_FLOAT, GL_FALSE, 12*sizeof(GLfloat), 0);
     glEnableVertexAttribArray(vertex_att);
 
     GLint normal_att = glGetAttribLocation(program, "normal");
-    glVertexAttribPointer(normal_att, 3, GL_FLOAT, GL_FALSE, 11*sizeof(GLfloat), (void *) (3*sizeof(GLfloat)));
+    glVertexAttribPointer(normal_att, 3, GL_FLOAT, GL_FALSE, 12*sizeof(GLfloat), (void *) (3*sizeof(GLfloat)));
     glEnableVertexAttribArray(normal_att);
 
     GLint color_att = glGetAttribLocation(program, "color");
-    glVertexAttribPointer(color_att, 3, GL_FLOAT, GL_FALSE, 11*sizeof(GLfloat), (void *) (6*sizeof(GLfloat)));
+    glVertexAttribPointer(color_att, 3, GL_FLOAT, GL_FALSE, 12*sizeof(GLfloat), (void *) (6*sizeof(GLfloat)));
     glEnableVertexAttribArray(color_att);
 
     GLint tex_att = glGetAttribLocation(program, "uv");
-    glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 11*sizeof(GLfloat), (void *) (9*sizeof(GLfloat)));
+    glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 12*sizeof(GLfloat), (void *) (9*sizeof(GLfloat)));
     glEnableVertexAttribArray(tex_att);
+    GLint phase_att = glGetAttribLocation(program, "phase");
+    glVertexAttribPointer(phase_att, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(GLfloat), (void*)(11 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(phase_att);
 
     // World transformation
     glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
