@@ -164,7 +164,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Water", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Obamium.png");
     resman_.LoadResource(Texture, "Test", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/cow.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Factory.obj");
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
     // Create particles for explosion
     resman_.CreateSphereDustParticles("SphereParticles", 5000);
@@ -182,12 +182,13 @@ void Game::SetupScene(void){
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
     light->Translate(glm::vec3(5, 10, -10));
-    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
-    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-    ground->Translate(glm::vec3(0, -5, 0));
-    ground->Scale(glm::vec3(500, 500, 500));
-     ground->Rotate(rot);
+  //  game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
+ //   glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+ //   ground->Translate(glm::vec3(0, -5, 0));
+ //   ground->Scale(glm::vec3(500, 500, 500));
+  //   ground->Rotate(rot);
     game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Test"); //INVALID MUMBER
+    base->Scale(glm::vec3(.1, .1, .1));
     
 
     // Create particles
@@ -264,7 +265,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     SceneNode* halo = game->scene_.GetNode("ParticleInstance");
     // View control
     float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 1.0;
+    float trans_factor = 50.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
@@ -276,6 +277,12 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_RIGHT){
         game->camera_.Yaw(-rot_factor);
+    }
+    if (key == GLFW_KEY_Z) {
+        game->camera_.Roll(-rot_factor);
+    }
+    if (key == GLFW_KEY_X) {
+        game->camera_.Roll(rot_factor);
     }
     if (key == GLFW_KEY_W) {
         game->camera_.Translate(game->camera_.GetForward() * trans_factor);
