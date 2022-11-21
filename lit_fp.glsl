@@ -35,7 +35,7 @@ void main()
 	vec4 ambcol = vec4(1,0,0,1);
 	//spec = 0;
 	//diffuse = 0;
- float amb = 0.4;
+ float amb = 0.7;
 
 	//pixel = vec4(0.4,0.8,0.9,1.0);
    

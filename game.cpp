@@ -21,7 +21,7 @@ const bool window_full_screen_g = false;
 float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
-const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
+const glm::vec3 viewport_background_color_g(0, 255, 255);
 glm::vec3 camera_position_g(0., 0., 10.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
@@ -71,7 +71,6 @@ void Game::InitWindow(void){
 
     // Make the window's context the current one
     glfwMakeContextCurrent(window_);
-
     // Initialize the GLEW library to access OpenGL extensions
     // Need to do it after initializing an OpenGL context
     glewExperimental = GL_TRUE;
@@ -165,12 +164,16 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "DripMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/water.jpeg");
     resman_.LoadResource(Texture, "Water", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.jpeg");
+    resman_.LoadResource(Texture, "Vine", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Obamium.png");
     resman_.LoadResource(Texture, "Test", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/flesh.jpg");
+    resman_.LoadResource(Texture, "Flesh", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Factory.obj");
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
     // Create particles for explosion
-    resman_.CreateSphereDustParticles("SphereParticles", 5000);
+    resman_.CreateSphereDustParticles("SphereParticles", 100);
     resman_.CreateSphereParticles("SphereParticles1", 25);
 
 }
@@ -184,15 +187,16 @@ void Game::SetupScene(void){
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
-    light->Translate(glm::vec3(5, 10, -10));
-  //  game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
- //   glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
- //   ground->Translate(glm::vec3(0, -5, 0));
- //   ground->Scale(glm::vec3(500, 500, 500));
-  //   ground->Rotate(rot);
-    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Test"); //INVALID MUMBER
-    base->Scale(glm::vec3(.1, .1, .1));
-    base->Translate(glm::vec3(0, 0, -10));
+    light->Translate(glm::vec3(0, 1000, -10));
+    light->Scale(glm::vec3(100, 100,100));
+//    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
+//    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+//    ground->Translate(glm::vec3(0, -5, 0));
+//    ground->Scale(glm::vec3(500, 500, 500));
+//     ground->Rotate(rot);
+    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Vine"); //INVALID MUMBER
+   // base->Scale(glm::vec3(.1, .1, .1));
+    base->Translate(glm::vec3(0, -2, -20));
     
 
     // Create particles
@@ -203,7 +207,7 @@ void Game::SetupScene(void){
     particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
     game::SceneNode* particles_2 = CreateInstance("ParticleInstance_Project2", "SphereParticles1", "DripMaterial", "Water");
     particles_2->SetPosition(glm::vec3(camera_.GetPosition().x + 1, camera_.GetPosition().y, 0));
-    //initalizeMap();
+    initalizeMap();
     /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   
     
@@ -269,7 +273,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     SceneNode* halo = game->scene_.GetNode("ParticleInstance");
     // View control
     float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 50.0;
+    float trans_factor = 2.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
@@ -409,20 +413,18 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
 }
 void Game::initalizeMap() {
     //inital map
-    SceneNode* entry = CreateInstance("EntryWay", "SimpleCylinderMesh", "Lighting", "RockyTexture");
+    SceneNode* entry = CreateInstance("EntryWay", "SimpleCylinderMesh", "Lighting", "Flesh");
     scene_.AddNode(entry);
-    entry->Translate(glm::vec3(0, 0, 0));
-    SceneNode* sides = CreateInstance("Tunnel_1", "SimpleCylinderMesh", "Lighting", "RockyTexture");
-    sides->Translate(glm::vec3(.8, 0, 0));
-    sides->SetOrientation(glm::normalize(glm::angleAxis(45.0f * glm::pi<float>() / 180.0f, glm::vec3(0,0,1))));
+    entry->SetPosition(glm::vec3(0, -50, 0));
+    glm::quat rot = glm::angleAxis(glm::radians(45.f), glm::vec3(1.f, 1.f, 0.f));
+    entry->Rotate(rot);
+    SceneNode* sides = CreateInstance("Ritual", "SimpleCylinderMesh", "Lighting", "Flesh");
     sides->Attach(entry, 0);
-    SceneNode* sides_= CreateInstance("Tunnel_2", "SimpleCylinderMesh", "Lighting", "RockyTexture");
-    sides_->Translate(glm::vec3(-.8, 0, 0));
-    sides_->SetOrientation(glm::normalize(glm::angleAxis(90.0f * glm::pi<float>() / 180.0f, glm::vec3(0, 0, 4))));
-    sides_->Attach(entry, 0);
-    SceneNode* control = CreateInstance("Control_Room", "SimpleCylinderMesh", "Lighting", "RockyTexture");
-    control->Translate(glm::vec3(2, 0, 0));
-    control->Attach(entry, 1);
+    sides->SetPosition(glm::vec3(2, -50, 0));
+    rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 1.f, 0.f));
+    sides->Rotate(rot);
+    
+
 
 
 }
