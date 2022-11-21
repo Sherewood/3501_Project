@@ -162,8 +162,12 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "DripMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/water.jpeg");
     resman_.LoadResource(Texture, "Water", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Obamium.png");
+    resman_.LoadResource(Texture, "Test", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/cow.obj");
+    resman_.LoadResource(Mesh, "Factory", filename.c_str());
     // Create particles for explosion
-    resman_.CreateSphereDustParticles("SphereParticles", 10000);
+    resman_.CreateSphereDustParticles("SphereParticles", 5000);
     resman_.CreateSphereParticles("SphereParticles1", 25);
 
 }
@@ -182,11 +186,13 @@ void Game::SetupScene(void){
     glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
     ground->Translate(glm::vec3(0, -5, 0));
     ground->Scale(glm::vec3(500, 500, 500));
-    ground->Rotate(rot);
+     ground->Rotate(rot);
+    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Test"); //INVALID MUMBER
+    
 
     // Create particles
     //environmental effect, takes form of a massive sand/dust storm. Holds around 10000 particles and basically fills the screen. 
- //   game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
+    game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
     //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
     game::SceneNode* particles_1 = CreateInstance("ParticleInstance_Project1", "SphereParticles1", "DripMaterial", "Water");
     particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
@@ -255,7 +261,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }
-
+    SceneNode* halo = game->scene_.GetNode("ParticleInstance");
     // View control
     float rot_factor(glm::pi<float>() / 180);
     float trans_factor = 1.0;
@@ -273,15 +279,27 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_W) {
         game->camera_.Translate(game->camera_.GetForward() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
-    if (key == GLFW_KEY_S){
+    if (key == GLFW_KEY_S) {
         game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
-    if (key == GLFW_KEY_A){
+    if (key == GLFW_KEY_A) {
         game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
     if (key == GLFW_KEY_D) {
         game->camera_.Translate(game->camera_.GetSide() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+    }
+    if (key == GLFW_KEY_R) {
+        game->camera_.Translate(game->camera_.GetUp() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+    }
+    if (key == GLFW_KEY_E) {
+        game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
 }
 
