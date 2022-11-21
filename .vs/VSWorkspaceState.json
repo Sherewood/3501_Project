@@ -1,13 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Factory Complex",
     "\\out",
     "\\out\\build"
   ],
-<<<<<<< HEAD
-  "SelectedNode": "\\new_shd_vp.glsl",
-=======
-  "SelectedNode": "\\resource_manager.cpp",
->>>>>>> parent of f9853b6 (minor changes)
+  "SelectedNode": "\\Factory.obj",
   "PreviewInSolutionExplorer": false
 }

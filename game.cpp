@@ -152,9 +152,6 @@ void Game::SetupResources(void){
 	// Load texture to be used on the object
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/download.jpg");
 	resman_.LoadResource(Texture, "WoodTexture", filename.c_str());
-<<<<<<< HEAD
-	
-=======
 	//grass
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.jpeg");
     resman_.LoadResource(Texture, "Grass", filename.c_str());
@@ -165,10 +162,13 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "DripMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/water.jpeg");
     resman_.LoadResource(Texture, "Water", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Obamium.png");
+    resman_.LoadResource(Texture, "Test", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Factory.obj");
+    resman_.LoadResource(Mesh, "Factory", filename.c_str());
     // Create particles for explosion
-    resman_.CreateSphereDustParticles("SphereParticles", 10000);
+    resman_.CreateSphereDustParticles("SphereParticles", 5000);
     resman_.CreateSphereParticles("SphereParticles1", 25);
->>>>>>> parent of f9853b6 (minor changes)
 
 }
 
@@ -181,30 +181,28 @@ void Game::SetupScene(void){
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
-<<<<<<< HEAD
-    light->Translate(glm::vec3(5, 0, -10));
-    initalizeMap();
-=======
     light->Translate(glm::vec3(5, 10, -10));
-    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
-    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-    ground->Translate(glm::vec3(0, -5, 0));
-    ground->Scale(glm::vec3(500, 500, 500));
-    ground->Rotate(rot);
+  //  game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
+ //   glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+ //   ground->Translate(glm::vec3(0, -5, 0));
+ //   ground->Scale(glm::vec3(500, 500, 500));
+  //   ground->Rotate(rot);
+    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Test"); //INVALID MUMBER
+    base->Scale(glm::vec3(.1, .1, .1));
+    
 
     // Create particles
     //environmental effect, takes form of a massive sand/dust storm. Holds around 10000 particles and basically fills the screen. 
- //   game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
+    game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
     //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
     game::SceneNode* particles_1 = CreateInstance("ParticleInstance_Project1", "SphereParticles1", "DripMaterial", "Water");
     particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
     game::SceneNode* particles_2 = CreateInstance("ParticleInstance_Project2", "SphereParticles1", "DripMaterial", "Water");
     particles_2->SetPosition(glm::vec3(camera_.GetPosition().x + 1, camera_.GetPosition().y, 0));
     //initalizeMap();
->>>>>>> parent of f9853b6 (minor changes)
     /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   
-    game::SceneNode* canvas = CreateInstance("Wall", "FlatSurface", "prod", "Blocks");
+    
     game::SceneNode* newShader = CreateInstance("Object", "SeamlessTorusMesh", "Nova", "Blocks");
 	mytorus->Translate(glm::vec3(-5, 0, -10));
     canvas->Translate(glm::vec3(0, 0, -10));
@@ -231,9 +229,7 @@ void Game::MainLoop(void){
           //      SceneNode *node = scene_.GetNode("MyTorus1");
 	//			glm::quat rotation = glm::angleAxis(0.95f*glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
      //          node->Rotate(rotation);
-               SceneNode* nodel = scene_.GetNode("Lightbulb");
-               nodel->Translate(glm::vec3(cos(current_time), 0.0,  -sin(current_time) ));
-               light.Update(nodel->GetPosition());
+
                 last_time = current_time;
 				
             }
@@ -266,10 +262,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }
-
+    SceneNode* halo = game->scene_.GetNode("ParticleInstance");
     // View control
     float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 1.0;
+    float trans_factor = 50.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
@@ -282,43 +278,35 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_RIGHT){
         game->camera_.Yaw(-rot_factor);
     }
-<<<<<<< HEAD
-    if (key == GLFW_KEY_S){
+    if (key == GLFW_KEY_Z) {
         game->camera_.Roll(-rot_factor);
     }
-    if (key == GLFW_KEY_X){
+    if (key == GLFW_KEY_X) {
         game->camera_.Roll(rot_factor);
     }
-    if (key == GLFW_KEY_A){
-        game->camera_.Translate(game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_Z){
-        game->camera_.Translate(-game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_J){
-        game->camera_.Translate(-game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_L){
-        game->camera_.Translate(game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_I){
-        game->camera_.Translate(game->camera_.GetUp()*trans_factor);
-    }
-    if (key == GLFW_KEY_K){
-        game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
-=======
     if (key == GLFW_KEY_W) {
         game->camera_.Translate(game->camera_.GetForward() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
-    if (key == GLFW_KEY_S){
+    if (key == GLFW_KEY_S) {
         game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
-    if (key == GLFW_KEY_A){
+    if (key == GLFW_KEY_A) {
         game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
     if (key == GLFW_KEY_D) {
         game->camera_.Translate(game->camera_.GetSide() * trans_factor);
->>>>>>> parent of f9853b6 (minor changes)
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+    }
+    if (key == GLFW_KEY_R) {
+        game->camera_.Translate(game->camera_.GetUp() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+    }
+    if (key == GLFW_KEY_E) {
+        game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
+        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
 }
 
