@@ -152,7 +152,23 @@ void Game::SetupResources(void){
 	// Load texture to be used on the object
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/download.jpg");
 	resman_.LoadResource(Texture, "WoodTexture", filename.c_str());
+<<<<<<< HEAD
 	
+=======
+	//grass
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.jpeg");
+    resman_.LoadResource(Texture, "Grass", filename.c_str());
+    //particles
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/duststorm");
+    resman_.LoadResource(Material, "DustMaterial", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/dripping");
+    resman_.LoadResource(Material, "DripMaterial", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/water.jpeg");
+    resman_.LoadResource(Texture, "Water", filename.c_str());
+    // Create particles for explosion
+    resman_.CreateSphereDustParticles("SphereParticles", 10000);
+    resman_.CreateSphereParticles("SphereParticles1", 25);
+>>>>>>> parent of f9853b6 (minor changes)
 
 }
 
@@ -165,8 +181,27 @@ void Game::SetupScene(void){
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
+<<<<<<< HEAD
     light->Translate(glm::vec3(5, 0, -10));
     initalizeMap();
+=======
+    light->Translate(glm::vec3(5, 10, -10));
+    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
+    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+    ground->Translate(glm::vec3(0, -5, 0));
+    ground->Scale(glm::vec3(500, 500, 500));
+    ground->Rotate(rot);
+
+    // Create particles
+    //environmental effect, takes form of a massive sand/dust storm. Holds around 10000 particles and basically fills the screen. 
+ //   game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
+    //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
+    game::SceneNode* particles_1 = CreateInstance("ParticleInstance_Project1", "SphereParticles1", "DripMaterial", "Water");
+    particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
+    game::SceneNode* particles_2 = CreateInstance("ParticleInstance_Project2", "SphereParticles1", "DripMaterial", "Water");
+    particles_2->SetPosition(glm::vec3(camera_.GetPosition().x + 1, camera_.GetPosition().y, 0));
+    //initalizeMap();
+>>>>>>> parent of f9853b6 (minor changes)
     /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   
     game::SceneNode* canvas = CreateInstance("Wall", "FlatSurface", "prod", "Blocks");
@@ -247,6 +282,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_RIGHT){
         game->camera_.Yaw(-rot_factor);
     }
+<<<<<<< HEAD
     if (key == GLFW_KEY_S){
         game->camera_.Roll(-rot_factor);
     }
@@ -270,6 +306,19 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_K){
         game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
+=======
+    if (key == GLFW_KEY_W) {
+        game->camera_.Translate(game->camera_.GetForward() * trans_factor);
+    }
+    if (key == GLFW_KEY_S){
+        game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
+    }
+    if (key == GLFW_KEY_A){
+        game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
+    }
+    if (key == GLFW_KEY_D) {
+        game->camera_.Translate(game->camera_.GetSide() * trans_factor);
+>>>>>>> parent of f9853b6 (minor changes)
     }
 }
 
