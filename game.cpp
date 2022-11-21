@@ -46,6 +46,8 @@ void Game::Init(void){
 
     // Set variables
     animating_ = true;
+    glfwSetCursorPos(window_, 400, 300);
+
 }
 
        
@@ -105,6 +107,7 @@ void Game::InitEventHandlers(void){
     // Set event callbacks
     glfwSetKeyCallback(window_, KeyCallback);
     glfwSetFramebufferSizeCallback(window_, ResizeCallback);
+    glfwSetCursorPosCallback(window_, CursorCallback);
 
     // Set pointer to game object, so that callbacks can access it
     glfwSetWindowUserPointer(window_, (void *) this);
@@ -189,6 +192,7 @@ void Game::SetupScene(void){
   //   ground->Rotate(rot);
     game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Test"); //INVALID MUMBER
     base->Scale(glm::vec3(.1, .1, .1));
+    base->Translate(glm::vec3(0, 0, -10));
     
 
     // Create particles
@@ -308,6 +312,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
         halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
     }
+    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
+        game->controlCursor_ = !game->controlCursor_;
+    }
 }
 
 
@@ -345,7 +352,15 @@ Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string obje
     scene_.AddNode(ast);
     return ast;
 }
-
+void Game::CursorCallback(GLFWwindow* window, double xpos, double ypos) {
+    void* ptr = glfwGetWindowUserPointer(window);
+    Game* game = (Game*)ptr;
+    if (game->controlCursor_) {
+        game->camera_.Yaw((400 - xpos) / 1000);
+        game->camera_.Pitch((300 - ypos) / 1000);
+        glfwSetCursorPos(game->window_, 400, 300);
+    }
+}
 
 void Game::CreateAsteroidField(int num_asteroids){
 
