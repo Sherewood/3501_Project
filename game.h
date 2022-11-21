@@ -44,6 +44,7 @@ namespace game {
             void SetupScene(void);
             // Run the game: keep the application active
             void MainLoop(void); 
+            static void CursorCallback(GLFWwindow* window, double xpos, double ypos);
 
         private:
             // GLFW window
@@ -62,7 +63,7 @@ namespace game {
             Light light;
             // Flag to turn animation on/off
             bool animating_;
-
+            bool controlCursor_ = true;
             // Methods to initialize the game
             void InitWindow(void);
             void InitView(void);
