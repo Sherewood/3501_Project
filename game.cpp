@@ -22,7 +22,7 @@ float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0, 255, 255);
-glm::vec3 camera_position_g(0., 0., 10.0);
+glm::vec3 camera_position_g(0., 20.0, 10.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
@@ -172,9 +172,12 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Flesh", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Factory.obj");
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/spark");
+    resman_.LoadResource(Material, "SparkMaterial", filename.c_str());
     // Create particles for explosion
     resman_.CreateSphereDustParticles("SphereParticles", 100);
     resman_.CreateSphereParticles("SphereParticles1", 25);
+    resman_.CreateSparkParticles("SparkParticles", camera_.GetPosition());
 
 }
 
@@ -207,6 +210,7 @@ void Game::SetupScene(void){
     particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
     game::SceneNode* particles_2 = CreateInstance("ParticleInstance_Project2", "SphereParticles1", "DripMaterial", "Water");
     particles_2->SetPosition(glm::vec3(camera_.GetPosition().x + 1, camera_.GetPosition().y, 0));
+    game::SceneNode* particles_3 = CreateInstance("ParticleInstance_3", "SparkParticles", "SparkMaterial", "Water");
     initalizeMap();
     /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   
