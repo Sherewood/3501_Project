@@ -13,5 +13,5 @@ void main (void)
 
     // Use texture in determining fragment colour
 
-    gl_FragColor = pixel;
+    gl_FragColor = frag_color;
 }
