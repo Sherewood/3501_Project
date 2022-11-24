@@ -170,8 +170,12 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Test", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/flesh.jpg");
     resman_.LoadResource(Texture, "Flesh", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Factory.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/steel.jpg");
+    resman_.LoadResource(Texture, "Steel", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/sole_factory.obj");
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.obj");
+    resman_.LoadResource(Mesh, "Field", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/spark");
     resman_.LoadResource(Material, "SparkMaterial", filename.c_str());
     // Create particles for explosion
@@ -190,16 +194,20 @@ void Game::SetupScene(void){
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
-    light->Translate(glm::vec3(0, 1000, -10));
+    light->Translate(glm::vec3(0, 100, -10));
     light->Scale(glm::vec3(100, 100,100));
 //    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
 //    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 //    ground->Translate(glm::vec3(0, -5, 0));
 //    ground->Scale(glm::vec3(500, 500, 500));
 //     ground->Rotate(rot);
-    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Vine"); //INVALID MUMBER
-   // base->Scale(glm::vec3(.1, .1, .1));
+    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Steel"); //INVALID MUMBER
+    base->Scale(glm::vec3(.1, .1, .1));
     base->Translate(glm::vec3(0, -2, -20));
+    game::SceneNode* facto = CreateSimpleInstance("Area1", "Field", "Lighting", "Vine"); //INVALID MUMBER
+    facto->Attach(base, 0);
+    //facto->Scale(glm::vec3(10, 10,10));
+    //facto->Translate(glm::vec3(0, -2, -20));
     
 
     // Create particles
@@ -415,14 +423,39 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
     SceneNode *scn = scene_.CreateNode(entity_name, geom, mat, tex);
     return scn;
 }
+SceneNode* Game::CreateSimpleInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
+
+    Resource* geom = resman_.GetResource(object_name);
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* mat = resman_.GetResource(material_name);
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+        }
+    }
+
+    SceneNode* scn = scene_.SimpleCreate(entity_name, geom, mat, tex);
+    return scn;
+}
 void Game::initalizeMap() {
     //inital map
+    const std::string name = "";
     SceneNode* entry = CreateInstance("EntryWay", "SimpleCylinderMesh", "Lighting", "Flesh");
     scene_.AddNode(entry);
     entry->SetPosition(glm::vec3(0, -50, 0));
     glm::quat rot = glm::angleAxis(glm::radians(45.f), glm::vec3(1.f, 1.f, 0.f));
     entry->Rotate(rot);
-    SceneNode* sides = CreateInstance("Ritual", "SimpleCylinderMesh", "Lighting", "Flesh");
+    //name = "Ritual";
+    SceneNode* sides =  CreateSimpleInstance(name, "SimpleCylinderMesh", "Lighting", "Flesh");
     sides->Attach(entry, 0);
     sides->SetPosition(glm::vec3(2, -50, 0));
     rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 1.f, 0.f));

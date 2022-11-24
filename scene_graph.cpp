@@ -42,6 +42,15 @@ SceneNode *SceneGraph::CreateNode(std::string node_name, Resource *geometry, Res
 
     return scn;
 }
+SceneNode* SceneGraph::SimpleCreate(std::string node_name, Resource* geometry, Resource* material, Resource* texture) {
+
+    // Create scene node with the specified resources
+    SceneNode* scn = new SceneNode(node_name, geometry, material, texture);
+
+   
+
+    return scn;
+}
 
 
 void SceneGraph::AddNode(SceneNode *node){

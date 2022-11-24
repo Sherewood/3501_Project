@@ -174,6 +174,15 @@ void SceneNode::Draw(Camera *camera,Light *light){
     } else {
 		glDrawElements(mode_, size_, GL_UNSIGNED_INT, 0);
     }
+    //tree searching functionality
+    if (children.size() > 0)
+    {
+        for (int i = 0; i < children.size(); i++)
+        {
+            children[i]->parent = world_transformation;
+            children[i]->Draw(camera, light);
+        }
+    }
 }
 
 
