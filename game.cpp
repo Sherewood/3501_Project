@@ -140,42 +140,54 @@ void Game::SetupResources(void){
     //new shader
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/new_shd");
     resman_.LoadResource(Material, "Nova", filename.c_str());
-
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/dripping");
+    resman_.LoadResource(Material, "DripMaterial", filename.c_str());
+    //particles
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/duststorm");
+    resman_.LoadResource(Material, "DustMaterial", filename.c_str());
 
 	// shader for 3-term lighting effect
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
 	resman_.LoadResource(Material, "Lighting", filename.c_str());
 
 	// Load texture to be used on the object
-	filename = std::string(MATERIAL_DIRECTORY) + std::string("/rocky.png");
+    //TEXTURES
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/rocky.png");
 	resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
-
-
 	// Load texture to be used on the object
-	filename = std::string(MATERIAL_DIRECTORY) + std::string("/download.jpg");
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/download.jpg");
 	resman_.LoadResource(Texture, "WoodTexture", filename.c_str());
-	//grass
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.jpeg");
-    resman_.LoadResource(Texture, "Grass", filename.c_str());
-    //particles
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/duststorm");
-    resman_.LoadResource(Material, "DustMaterial", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/dripping");
-    resman_.LoadResource(Material, "DripMaterial", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/water.jpeg");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/water.jpeg");
     resman_.LoadResource(Texture, "Water", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.jpeg");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/grasslands.jpeg");
     resman_.LoadResource(Texture, "Vine", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Obamium.png");
-    resman_.LoadResource(Texture, "Test", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/flesh.jpg");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/flesh.jpg");
     resman_.LoadResource(Texture, "Flesh", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/steel.jpg");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/stainless.png");
     resman_.LoadResource(Texture, "Steel", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/sole_factory.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/yellow cement.png");
+    resman_.LoadResource(Texture, "YSteel", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/yellow cement.png");
+    resman_.LoadResource(Texture, "YSteel", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
+    resman_.LoadResource(Texture, "Concrete", filename.c_str());
+
+    //World objects 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_main.obj");//texture steel
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/grasslands.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/grasslands.obj");//texture grasslands
     resman_.LoadResource(Mesh, "Field", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/parking terrain.obj");//texture Yellow steel
+    resman_.LoadResource(Mesh, "Parking", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_int.obj");//texture CEMENT
+    resman_.LoadResource(Mesh, "Fact_int_1", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_int_2.obj");//texture YELLOW CEMENT
+    resman_.LoadResource(Mesh, "Fact_int_2", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Reactor Detail.obj");//texture stainless
+    resman_.LoadResource(Mesh, "React_detail", filename.c_str());
+
+
+    //particles
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/spark");
     resman_.LoadResource(Material, "SparkMaterial", filename.c_str());
     // Create particles for explosion
@@ -201,11 +213,7 @@ void Game::SetupScene(void){
 //    ground->Translate(glm::vec3(0, -5, 0));
 //    ground->Scale(glm::vec3(500, 500, 500));
 //     ground->Rotate(rot);
-    game::SceneNode* base = CreateInstance("Area1", "Factory", "Lighting","Steel"); //INVALID MUMBER
-    base->Scale(glm::vec3(.1, .1, .1));
-    base->Translate(glm::vec3(0, -2, -20));
-    game::SceneNode* facto = CreateSimpleInstance("Area1", "Field", "Lighting", "Vine"); //INVALID MUMBER
-    facto->Attach(base, 0);
+
     //facto->Scale(glm::vec3(10, 10,10));
     //facto->Translate(glm::vec3(0, -2, -20));
     
@@ -285,7 +293,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     SceneNode* halo = game->scene_.GetNode("ParticleInstance");
     // View control
     float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 2.0;
+    float trans_factor = 10.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
@@ -448,14 +456,31 @@ SceneNode* Game::CreateSimpleInstance(std::string entity_name, std::string objec
 }
 void Game::initalizeMap() {
     //inital map
-    const std::string name = "";
+    game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main facort 
+    factory->Scale(glm::vec3(.1, .1, .1));
+    factory->Translate(glm::vec3(0, -2, -20));
+    game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 
+    land->Attach(factory, 0);
+    game::SceneNode* parking = CreateSimpleInstance("parking", "Parking", "Lighting", "YSteel");
+    parking->Attach(factory, 0);
+    game::SceneNode* factor_int = CreateSimpleInstance("interior_1", "Fact_int_1", "Lighting", "Cement");
+    factor_int->Attach(factory, 0);
+    game::SceneNode* factor_int_2 = CreateSimpleInstance("interior_2", "Fact_int_2", "Lighting", "YSteel");
+    factor_int_2->Attach(factory, 0);
+    game::SceneNode* reactor = CreateSimpleInstance("ReactorDetail", "React_detail", "Lighting", "Steel");
+    reactor->Attach(factory, 0);
+
+
+
+
+
     SceneNode* entry = CreateInstance("EntryWay", "SimpleCylinderMesh", "Lighting", "Flesh");
     scene_.AddNode(entry);
     entry->SetPosition(glm::vec3(0, -50, 0));
     glm::quat rot = glm::angleAxis(glm::radians(45.f), glm::vec3(1.f, 1.f, 0.f));
     entry->Rotate(rot);
     //name = "Ritual";
-    SceneNode* sides =  CreateSimpleInstance(name, "SimpleCylinderMesh", "Lighting", "Flesh");
+    SceneNode* sides = CreateInstance("Ritual", "SimpleCylinderMesh", "Lighting", "Flesh");
     sides->Attach(entry, 0);
     sides->SetPosition(glm::vec3(2, -50, 0));
     rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 1.f, 0.f));
