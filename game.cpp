@@ -165,12 +165,11 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Flesh", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/stainless.png");
     resman_.LoadResource(Texture, "Steel", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/yellow cement.png");
+    /*     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/yellow cement.png");
     resman_.LoadResource(Texture, "YSteel", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/yellow cement.png");
-    resman_.LoadResource(Texture, "YSteel", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
-    resman_.LoadResource(Texture, "Concrete", filename.c_str());
+      filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
+    resman_.LoadResource(Texture, "Concrete", filename.c_str());*/
+
 
     //World objects 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_main.obj");//texture steel
@@ -185,6 +184,10 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "Fact_int_2", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Reactor Detail.obj");//texture stainless
     resman_.LoadResource(Mesh, "React_detail", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/paper1.obj");//texture stainless
+    resman_.LoadResource(Mesh, "paper", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Boar.obj");//texture stainless
+    resman_.LoadResource(Mesh, "Boar", filename.c_str());
 
 
     //particles
@@ -456,16 +459,20 @@ SceneNode* Game::CreateSimpleInstance(std::string entity_name, std::string objec
 }
 void Game::initalizeMap() {
     //inital map
+    game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting","Flesh");
+    boar->Translate(glm::vec3(0, 0, -1000));
+    game::SceneNode* page = CreateInstance("Page", "paper", "Lighting","WoodTexture");
+    page->Translate(glm::vec3(0, 0, -1000));
     game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main facort 
     factory->Scale(glm::vec3(.1, .1, .1));
     factory->Translate(glm::vec3(0, -2, -20));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 
     land->Attach(factory, 0);
-    game::SceneNode* parking = CreateSimpleInstance("parking", "Parking", "Lighting", "YSteel");
+    game::SceneNode* parking = CreateSimpleInstance("parking", "Parking", "Lighting", "Vine");
     parking->Attach(factory, 0);
-    game::SceneNode* factor_int = CreateSimpleInstance("interior_1", "Fact_int_1", "Lighting", "Cement");
+    game::SceneNode* factor_int = CreateSimpleInstance("interior_1", "Fact_int_1", "Lighting", "Vine");
     factor_int->Attach(factory, 0);
-    game::SceneNode* factor_int_2 = CreateSimpleInstance("interior_2", "Fact_int_2", "Lighting", "YSteel");
+    game::SceneNode* factor_int_2 = CreateSimpleInstance("interior_2", "Fact_int_2", "Lighting", "Steel");
     factor_int_2->Attach(factory, 0);
     game::SceneNode* reactor = CreateSimpleInstance("ReactorDetail", "React_detail", "Lighting", "Steel");
     reactor->Attach(factory, 0);
