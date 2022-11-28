@@ -165,10 +165,10 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Flesh", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/stainless.png");
     resman_.LoadResource(Texture, "Steel", filename.c_str());
-    /*     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/yellow cement.png");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/Yellow cement.jpg");
     resman_.LoadResource(Texture, "YSteel", filename.c_str());
-      filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
-    resman_.LoadResource(Texture, "Concrete", filename.c_str());*/
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
+    resman_.LoadResource(Texture, "Concrete", filename.c_str());
 
 
     //World objects 
@@ -470,11 +470,11 @@ void Game::initalizeMap() {
     land->Attach(factory, 0);
     game::SceneNode* parking = CreateSimpleInstance("parking", "Parking", "Lighting", "Vine");
     parking->Attach(factory, 0);
-    game::SceneNode* factor_int = CreateSimpleInstance("interior_1", "Fact_int_1", "Lighting", "Vine");
+    game::SceneNode* factor_int = CreateSimpleInstance("interior_1", "Fact_int_1", "Lighting", "Concrete");
     factor_int->Attach(factory, 0);
-    game::SceneNode* factor_int_2 = CreateSimpleInstance("interior_2", "Fact_int_2", "Lighting", "Steel");
+    game::SceneNode* factor_int_2 = CreateSimpleInstance("interior_2", "Fact_int_2", "Lighting", "YSteel");
     factor_int_2->Attach(factory, 0);
-    game::SceneNode* reactor = CreateSimpleInstance("ReactorDetail", "React_detail", "Lighting", "Steel");
+    game::SceneNode* reactor = CreateSimpleInstance("ReactorDetail", "React_detail", "Lighting", "YSteel");
     reactor->Attach(factory, 0);
 
 
