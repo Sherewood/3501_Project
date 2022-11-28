@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 # Name of project
-set(PROJ_NAME TextureMappingDemo)
+set(PROJ_NAME Meltdown)
 project(${PROJ_NAME} C CXX)
 
 # Specify project files: header files and source files
