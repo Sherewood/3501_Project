@@ -46,7 +46,7 @@ namespace game {
 
             // Draw the node according to scene parameters in 'camera'
             // variable
-            virtual void Draw(Camera *camera, Light *l);
+            virtual void Draw(Camera *camera, SceneNode *l);
 
             // Update the node
             virtual void Update(void);
@@ -78,9 +78,11 @@ namespace game {
             glm::vec3 joint; //position where the node rotates on 
             glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
             bool have; //boolean to be used whenever a node object is "picked up" by the player
+            float radius = 10.0f;
+            std::string lore="";
 
             // Set matrices that transform the node in a shader program
-            void SetupShader(GLuint program,Light *l);
+            void SetupShader(GLuint program,SceneNode *l);
 
     }; // class SceneNode
 

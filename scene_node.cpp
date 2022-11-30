@@ -153,7 +153,7 @@ void SceneNode::Attach(SceneNode* parent_node, float level)
 }
 
 //carries the light pointer in 
-void SceneNode::Draw(Camera *camera,Light *light){
+void SceneNode::Draw(Camera *camera,SceneNode *light){
 
     // Select proper material (shader program)
     glUseProgram(material_);
@@ -192,7 +192,7 @@ void SceneNode::Update(void){
 }
 
 //modified to take light object 
-void SceneNode::SetupShader(GLuint program,Light *l){
+void SceneNode::SetupShader(GLuint program,SceneNode *l){
 
 	
     // Set attributes for shaders

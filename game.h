@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/Noise.hpp>
+#include <vector>
 
 
 #include "scene_graph.h"
@@ -15,6 +16,7 @@
 #include "camera.h"
 #include "asteroid.h"
 #include "Light.h"
+#include "Paper.h"
 
 namespace game {
 
@@ -59,8 +61,6 @@ namespace game {
             // Camera abstraction
             Camera camera_;
 
-            //Light Source 
-            Light light;
             // Flag to turn animation on/off
             bool animating_;
             bool controlCursor_ = true;
@@ -68,6 +68,11 @@ namespace game {
             void InitWindow(void);
             void InitView(void);
             void InitEventHandlers(void);
+            std::vector<SceneNode*> items;
+            bool dooropen;
+            bool start;
+            bool end;
+            bool game;
  
             // Methods to handle events
             static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

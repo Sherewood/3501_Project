@@ -39,8 +39,7 @@ namespace game {
     private:
         // Angular momentum of Paper
        // glm::quat angm_;
-        float radius = 10.0f;
-        std::string lore;
+
 
 
     }; // class Paper

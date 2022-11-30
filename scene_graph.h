@@ -12,47 +12,73 @@
 #include "camera.h"
 #include "Light.h"
 
+// Size of the texture that we will draw
+#define FRAME_BUFFER_WIDTH 1024
+#define FRAME_BUFFER_HEIGHT 768
+
 namespace game {
 
     // Class that manages all the objects in a scene
     class SceneGraph {
 
-        private:
-            // Background color
-            glm::vec3 background_color_;
+    private:
+        // Background color
+        glm::vec3 background_color_;
 
-            // Scene nodes to render
-            std::vector<SceneNode *> node_;
+        // Scene nodes to render
+        std::vector<SceneNode*> node_;
 
-        public:
-            // Constructor and destructor
-            SceneGraph(void);
-            ~SceneGraph();
+        // Frame buffer for drawing to texture
+        GLuint frame_buffer_;
+        // Quad vertex array for drawing from texture
+        GLuint quad_array_buffer_;
+        // Render targets
+        GLuint texture_;
+        GLuint depth_buffer_;
 
-            // Background color
-            void SetBackgroundColor(glm::vec3 color);
-            glm::vec3 GetBackgroundColor(void) const;
-            
-            // Create a scene node from the specified resources
-            SceneNode *CreateNode(std::string node_name, Resource *geometry, Resource *material, Resource *texture = NULL);
-            //Creates an alternative node which is not added to the scenenode
-            SceneNode *SimpleCreate(std::string node_name, Resource* geometry, Resource* material, Resource* texture = NULL);
-            // Add an already-created node
-            void AddNode(SceneNode *node);
-            // Find a scene node with a specific name
-            SceneNode *GetNode(std::string node_name) const;
-            // Get node const iterator
-            std::vector<SceneNode *>::const_iterator begin() const;
-            std::vector<SceneNode *>::const_iterator end() const;
+    public:
+        // Constructor and destructor
+        SceneGraph(void);
+        ~SceneGraph();
 
-            // Draw the entire scene
-            void Draw(Camera *camera,Light *l);
+        // Background color
+        void SetBackgroundColor(glm::vec3 color);
+        glm::vec3 GetBackgroundColor(void) const;
 
-            // Update entire scene
-            void Update(void);
+        // Create a scene node from the specified resources
+        SceneNode* CreateNode(std::string node_name, Resource* geometry, Resource* material, Resource* texture = NULL);
+        // Add an already-created node
+        void AddNode(SceneNode* node);
+        // Find a scene node with a specific name
+        SceneNode* GetNode(std::string node_name) const;
+        // Get node const iterator
+        std::vector<SceneNode*>::const_iterator begin() const;
+        std::vector<SceneNode*>::const_iterator end() const;
+
+        // Draw the entire scene
+        void Draw(Camera* camera);
+
+        // Update entire scene
+        void Update(void);
+        // Add an already-created node
+        // Drawing from/to a texture
+        // Setup the texture
+        void SetupDrawToTexture(void);
+        // Draw the scene into a texture
+        void DrawToTexture(Camera* camera);
+        // Process and draw the texture on the screen
+        void DisplayTexture(GLuint program, float timer);
+        // Save texture to a file in ppm format
+        void SaveTexture(char* filename);
+        //due to the fact that we need light in functions inacessible to the game, this function and value will hold our light object/objects 
+        void Setlight(SceneNode* light);
+        SceneNode* l;
 
     }; // class SceneGraph
 
 } // namespace game
 
 #endif // SCENE_GRAPH_H_
+
+
+

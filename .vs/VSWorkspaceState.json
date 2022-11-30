@@ -1,11 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\LORE",
     "\\Meshes",
     "\\out",
     "\\out\\build",
     "\\textures"
   ],
-  "SelectedNode": "\\textures\\download.jpg",
+  "SelectedNode": "\\scene_graph.h",
   "PreviewInSolutionExplorer": false
 }

@@ -26,6 +26,11 @@ glm::vec3 camera_position_g(0., 20.0, -1000.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
+//world state booleans
+bool dooropen=false;
+bool start=true;
+bool end=false;
+bool game=false;
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
@@ -121,6 +126,7 @@ void Game::SetupResources(void){
 	resman_.CreateWall("FlatSurface");
 	resman_.CreateCylinder("SimpleCylinderMesh", 2.0, 0.4, 30, 30);
     resman_.CreateSphere("SimpleSphere");
+    //MATERIALS
     // Load shader for texture mapping
 	std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
 	resman_.LoadResource(Material, "TextureShader", filename.c_str());
@@ -149,7 +155,24 @@ void Game::SetupResources(void){
 	// shader for 3-term lighting effect
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
 	resman_.LoadResource(Material, "Lighting", filename.c_str());
-
+    //Lore materials
+  /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
+    resman_.LoadResource(Material, "Title_1", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro Lore.png");
+    resman_.LoadResource(Material, "Intro_2", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
+    resman_.LoadResource(Material, "Welcome_3", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/letter home.png");
+    resman_.LoadResource(Material, "letter_4", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/peter's message.png");
+    resman_.LoadResource(Material, "peter_5", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/results.png");
+    resman_.LoadResource(Material, "results_6", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Diary.png");
+    resman_.LoadResource(Material, "Diary_7", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Last.png");
+    resman_.LoadResource(Material, "Last_8", filename.c_str());
+    * Doesn't work yet so I don't think we can use screen effects, Unless we make a weirdass shader module*/
 	// Load texture to be used on the object
     //TEXTURES
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/rocky.png");
@@ -169,6 +192,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "YSteel", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
     resman_.LoadResource(Texture, "Concrete", filename.c_str());
+ 
 
 
     //World objects 
@@ -209,8 +233,9 @@ void Game::SetupScene(void){
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
-    light->Translate(glm::vec3(0, 100, -10));
+    light->Translate(glm::vec3(0, 10000, -10));
     light->Scale(glm::vec3(100, 100,100));
+    scene_.Setlight(light);
 //    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
 //    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 //    ground->Translate(glm::vec3(0, -5, 0));
@@ -254,8 +279,18 @@ void Game::MainLoop(void){
             double current_time = glfwGetTime();
             if ((current_time - last_time) > 0.01)
 			{
-                //scene_.Update();
-
+                scene_.Update();
+                for (int i = 0; i < items.size(); i++)
+                {
+                        std::stringstream ss;
+                        ss << i;
+                        std::string index = ss.str();
+                        std::string name = "Page_" + index;
+                        SceneNode *node = scene_.GetNode(name);
+                        glm::quat rotation = glm::angleAxis(0.95f * glm::pi<float>() / 180.0f, glm::vec3(0.0, 0.0, 1.0));
+                        node->Translate(glm::vec3(0, sin(current_time)/100, 0));
+                        node->Rotate(rotation);
+                }
                 // Animate the scene
           //      SceneNode *node = scene_.GetNode("MyTorus1");
 	//			glm::quat rotation = glm::angleAxis(0.95f*glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
@@ -267,7 +302,7 @@ void Game::MainLoop(void){
         }
 
         // Draw the scene
-        scene_.Draw(&camera_,&light);
+        scene_.Draw(&camera_);
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
@@ -434,48 +469,47 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
     SceneNode *scn = scene_.CreateNode(entity_name, geom, mat, tex);
     return scn;
 }
-SceneNode* Game::CreateSimpleInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
 
-    Resource* geom = resman_.GetResource(object_name);
-    if (!geom) {
-        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
-    }
-
-    Resource* mat = resman_.GetResource(material_name);
-    if (!mat) {
-        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
-    }
-
-    Resource* tex = NULL;
-    if (texture_name != "") {
-        tex = resman_.GetResource(texture_name);
-        if (!tex) {
-            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
-        }
-    }
-
-    SceneNode* scn = scene_.SimpleCreate(entity_name, geom, mat, tex);
-    return scn;
-}
 void Game::initalizeMap() {
     //inital map
     game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting","Flesh");
     boar->Translate(glm::vec3(0, 0, -1000));
-    game::SceneNode* page = CreateInstance("Page", "paper", "Lighting","WoodTexture");
-    page->Translate(glm::vec3(0, 0, -1000));
     game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main facort 
     factory->Scale(glm::vec3(.1, .1, .1));
     factory->Translate(glm::vec3(0, -2, -20));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 
     land->Attach(factory, 0);
-    game::SceneNode* parking = CreateSimpleInstance("parking", "Parking", "Lighting", "Vine");
+    game::SceneNode* parking = CreateInstance("parking", "Parking", "Lighting", "Vine");
     parking->Attach(factory, 0);
-    game::SceneNode* factor_int = CreateSimpleInstance("interior_1", "Fact_int_1", "Lighting", "Concrete");
+    game::SceneNode* factor_int = CreateInstance("interior_1", "Fact_int_1", "Lighting", "Concrete");
     factor_int->Attach(factory, 0);
-    game::SceneNode* factor_int_2 = CreateSimpleInstance("interior_2", "Fact_int_2", "Lighting", "YSteel");
+    game::SceneNode* factor_int_2 = CreateInstance("interior_2", "Fact_int_2", "Lighting", "YSteel");
     factor_int_2->Attach(factory, 0);
-    game::SceneNode* reactor = CreateSimpleInstance("ReactorDetail", "React_detail", "Lighting", "YSteel");
+   game::SceneNode* reactor = CreateInstance("ReactorDetail", "React_detail", "Lighting", "YSteel");
     reactor->Attach(factory, 0);
+    game::SceneNode* page = CreateInstance("Page_0", "paper", "Lighting","Flesh");
+    page->Attach(factor_int_2, 0);
+    float placerng = (-100 + rand() % (100 - (-100) + 1));
+    float placerngz = (-10 + rand() % (10 - (-10) + 1));
+    page->Translate(glm::vec3(0, 5, 0));
+    page->Scale(glm::vec3(.09, .09, .09));
+    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+ 
+    //page->Translate(glm::vec3(0))
+    for (int i = 0; i < 8; i++)
+    {
+        float placerngx = (-100 + rand() % (100 - (-100) + 1));
+        placerngz = (-10 + rand() % (10 - (-10) + 1));
+        items.push_back(page);
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "Page_" + index;
+        page = CreateInstance(name, "paper", "Lighting","Flesh");
+        page->Translate(glm::vec3(placerngx, 5, placerngz));
+        page->Scale(glm::vec3(.09, .09, .09));
+        page->Rotate(rot);
+    }
 
 
 
@@ -484,7 +518,7 @@ void Game::initalizeMap() {
     SceneNode* entry = CreateInstance("EntryWay", "SimpleCylinderMesh", "Lighting", "Flesh");
     scene_.AddNode(entry);
     entry->SetPosition(glm::vec3(0, -50, 0));
-    glm::quat rot = glm::angleAxis(glm::radians(45.f), glm::vec3(1.f, 1.f, 0.f));
+    rot = glm::angleAxis(glm::radians(45.f), glm::vec3(1.f, 1.f, 0.f));
     entry->Rotate(rot);
     //name = "Ritual";
     SceneNode* sides = CreateInstance("Ritual", "SimpleCylinderMesh", "Lighting", "Flesh");
