@@ -4,6 +4,10 @@
     "\\out",
     "\\out\\build"
   ],
+<<<<<<< Updated upstream
   "SelectedNode": "\\main.cpp",
+=======
+  "SelectedNode": "\\scene_node.h",
+>>>>>>> Stashed changes
   "PreviewInSolutionExplorer": false
 }
