@@ -13,5 +13,6 @@ void main (void)
 
     // Use texture in determining fragment colour
 
+    //currently using the color value, not the texture
     gl_FragColor = frag_color;
 }

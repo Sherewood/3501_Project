@@ -146,6 +146,7 @@ void Game::SetupResources(void){
     //new shader
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/new_shd");
     resman_.LoadResource(Material, "Nova", filename.c_str());
+    //shaders for the dripping effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/dripping");
     resman_.LoadResource(Material, "DripMaterial", filename.c_str());
     //particles
@@ -254,6 +255,7 @@ void Game::SetupScene(void){
     particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
     game::SceneNode* particles_2 = CreateInstance("ParticleInstance_Project2", "SphereParticles1", "DripMaterial", "Water");
     particles_2->SetPosition(glm::vec3(camera_.GetPosition().x + 1, camera_.GetPosition().y, 0));
+    //particles to represent sparks for electricity or grinding metal
     game::SceneNode* particles_3 = CreateInstance("ParticleInstance_3", "SparkParticles", "SparkMaterial", "Water");
     initalizeMap();
     /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
@@ -472,9 +474,10 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
 
 void Game::initalizeMap() {
     //inital map
+    //create a flesh object and move it into place
     game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting","Flesh");
     boar->Translate(glm::vec3(0, 0, -1000));
-    game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main facort 
+    game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main factory building
     factory->Scale(glm::vec3(.1, .1, .1));
     factory->Translate(glm::vec3(0, -2, -20));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 

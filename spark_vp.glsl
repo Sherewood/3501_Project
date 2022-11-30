@@ -51,9 +51,6 @@ void main()
         
     // Define outputs
     // Define color of vertex
-    //vertex_color = color.rgb; // Color defined during the construction of the particles
-    //vertex_color = object_color; // Uniform color 
-    //vertex_color = vec3(t, 0.0, 1-t); // red-purple dynamic color
     vertex_color = vec3(1.0 - t/0.3, 1.0 - t/0.3, 0.8 - (t/0.3 * 0.8));
 
     // Forward time step to geometry shader

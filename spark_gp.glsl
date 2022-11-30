@@ -39,7 +39,8 @@ void main(void){
     v[1] = vec4(position.x + 0.5*p_size, position.y - 0.5*p_size, position.z, 1.0);
     v[2] = vec4(position.x - 0.5*p_size, position.y + 0.5*p_size, position.z, 1.0);
     v[3] = vec4(position.x + 0.5*p_size, position.y + 0.5*p_size, position.z, 1.0);
-
+    
+    //set the texture coordinates of each vertex
     c[0] = vec2(0.0,0.0);
     c[1] = vec2(0.5,0.0);
     c[2] = vec2(0.0,0.5);

@@ -105,6 +105,7 @@ void ResourceManager::LoadMaterial(const std::string name, const char *prefix){
         throw(std::ios_base::failure(std::string("Error compiling fragment shader: ")+std::string(buffer)));
     }
 
+    //check if there is a geometry shader
     filename = std::string(prefix) + std::string(GEOMETRY_PROGRAM_EXTENSION);
     bool geometry_program = false;
     std::string gp = "";
@@ -133,8 +134,7 @@ void ResourceManager::LoadMaterial(const std::string name, const char *prefix){
         }
     }
 
-    // Create a shader program linking both vertex and fragment shaders
-    // together
+    // Create a shader program linking all of the required shaders
     GLuint sp = glCreateProgram();
     glAttachShader(sp, vs);
     glAttachShader(sp, fs);
