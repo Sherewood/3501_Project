@@ -194,7 +194,7 @@ void SceneNode::Update(void){
 //modified to take light object 
 void SceneNode::SetupShader(GLuint program,SceneNode *l){
 
-	
+    glDisable(GL_CULL_FACE);
     // Set attributes for shaders
     GLint vertex_att = glGetAttribLocation(program, "vertex");
     glVertexAttribPointer(vertex_att, 3, GL_FLOAT, GL_FALSE, 12*sizeof(GLfloat), 0);

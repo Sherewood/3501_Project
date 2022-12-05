@@ -474,15 +474,9 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
 
 void Game::initalizeMap() {
     //inital map
-<<<<<<< Updated upstream
     //create a flesh object and move it into place
-    game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting","Flesh");
-    boar->Translate(glm::vec3(0, 0, -1000));
     game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main factory building
-=======
 
-    game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main facort 
->>>>>>> Stashed changes
     factory->Scale(glm::vec3(.1, .1, .1));
     factory->Translate(glm::vec3(0, -2, -20));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 

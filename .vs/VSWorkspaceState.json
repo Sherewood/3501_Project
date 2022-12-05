@@ -1,13 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\out",
-    "\\out\\build"
+    ""
   ],
-<<<<<<< Updated upstream
-  "SelectedNode": "\\main.cpp",
-=======
-  "SelectedNode": "\\scene_node.h",
->>>>>>> Stashed changes
+  "SelectedNode": "\\resource_manager.cpp",
   "PreviewInSolutionExplorer": false
 }
