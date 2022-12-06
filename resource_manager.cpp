@@ -342,7 +342,38 @@ void ResourceManager::CreateCylinder(std::string object_name, float height, floa
 	AddResource(Mesh, object_name, vbo, ebo, face_num * face_att);
 
 }
+//creates a square
+void ResourceManager:: CreateSquare(std::string object_name) {
 
+    // Definition of the wall
+    // The wall is simply a quad formed with two triangles
+    GLfloat vertex[] = {
+        // Position, normal, color, texture coordinates
+        // Here, color stores the tangent of the vertex
+        -1.0, -1.0, 0.0,  0.0, 0.0,  1.0,  1.0, 0.0, 0.0,  0.0, 0.0,
+        -1.0,  1.0, 0.0,  0.0, 0.0,  1.0,  1.0, 0.0, 0.0,  0.0, 1.0,
+         1.0,  1.0, 0.0,  0.0, 0.0,  1.0,  1.0, 0.0, 0.0,  1.0, 1.0,
+         1.0, -1.0, 0.0,  0.0, 0.0,  1.0,  1.0, 0.0, 0.0,  1.0, 0.0 };
+    GLuint face[] = { 0,1,3,
+                      0,2,3,
+                       0,3,4,
+                       4,3,0,
+                        4,3,2};
+
+    // Create OpenGL buffers and copy data
+    GLuint vbo, ebo;
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, 4 * 12 * sizeof(GLfloat), vertex, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(GLuint), face, GL_STATIC_DRAW);
+
+    // Create resource
+    AddResource(Mesh, object_name, vbo, ebo, 3 * 3);
+}
 void ResourceManager::CreateTorus(std::string object_name, float loop_radius, float circle_radius, int num_loop_samples, int num_circle_samples) {
 
 	// Create a torus

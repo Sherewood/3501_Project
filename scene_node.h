@@ -60,6 +60,9 @@ namespace game {
 
             //attachment 
             void Attach(SceneNode* parent, float level);
+
+            //Collision function USE THIS FOR COLLISION
+            bool collided(); // function for collision. May need extra details 
        
 
         private:
@@ -79,7 +82,8 @@ namespace game {
             glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
             bool have; //boolean to be used whenever a node object is "picked up" by the player
             float radius = 10.0f;
-            std::string lore="";
+            std::string lore = "";
+
 
             // Set matrices that transform the node in a shader program
             void SetupShader(GLuint program,SceneNode *l);

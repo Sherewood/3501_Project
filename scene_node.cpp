@@ -257,5 +257,7 @@ void SceneNode::SetupShader(GLuint program,SceneNode *l){
     double current_time = glfwGetTime();
     glUniform1f(timer_var, (float) current_time);
 }
-
+bool SceneNode::collided() {
+    return false;
+}
 } // namespace game;

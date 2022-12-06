@@ -121,6 +121,7 @@ void Game::InitEventHandlers(void){
 void Game::SetupResources(void){
 
     // Create geometry of the objects
+    resman_.CreateSquare("Square");
 	resman_.CreateTorus("SimpleTorusMesh", 0.8, 0.35, 30, 30);
 	resman_.CreateSeamlessTorus("SeamlessTorusMesh", 0.8, 0.35, 80, 80);
 	resman_.CreateWall("FlatSurface");
@@ -230,6 +231,9 @@ void Game::SetupScene(void){
 
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
+        game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting");
+    Skybox->SetPosition(glm::vec3((0., -10, -990.0)));
+    Skybox->Scale(glm::vec3(1000, 1000, 1000));
 
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
@@ -237,6 +241,7 @@ void Game::SetupScene(void){
     light->Translate(glm::vec3(0, 10000, -10));
     light->Scale(glm::vec3(100, 100,100));
     scene_.Setlight(light);
+ 
 //    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
 //    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 //    ground->Translate(glm::vec3(0, -5, 0));
@@ -250,6 +255,7 @@ void Game::SetupScene(void){
     // Create particles
     //environmental effect, takes form of a massive sand/dust storm. Holds around 10000 particles and basically fills the screen. 
     game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
+    /*
     //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
     game::SceneNode* particles_1 = CreateInstance("ParticleInstance_Project1", "SphereParticles1", "DripMaterial", "Water");
     particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
@@ -258,15 +264,11 @@ void Game::SetupScene(void){
     //particles to represent sparks for electricity or grinding metal
     game::SceneNode* particles_3 = CreateInstance("ParticleInstance_3", "SparkParticles", "SparkMaterial", "Water");
     initalizeMap();
-    /*	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
+    	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   
-    
-    game::SceneNode* newShader = CreateInstance("Object", "SeamlessTorusMesh", "Nova", "Blocks");
-	mytorus->Translate(glm::vec3(-5, 0, -10));
-    canvas->Translate(glm::vec3(0, 0, -10));
-    newShader->Translate(glm::vec3(5, 0, -10));
-    
     */
+    
+    
 		
 }
 
@@ -292,11 +294,13 @@ void Game::MainLoop(void){
                         glm::quat rotation = glm::angleAxis(0.95f * glm::pi<float>() / 180.0f, glm::vec3(0.0, 0.0, 1.0));
                         node->Translate(glm::vec3(0, sin(current_time)/100, 0));
                         node->Rotate(rotation);
+                        if (node->collided())
+                        {
+                            std::cout << "HEHAHE" << ::std::endl;
+                        }
                 }
                 // Animate the scene
-          //      SceneNode *node = scene_.GetNode("MyTorus1");
-	//			glm::quat rotation = glm::angleAxis(0.95f*glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
-     //          node->Rotate(rotation);
+                
 
                 last_time = current_time;
 				
