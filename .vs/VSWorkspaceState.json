@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\LORE",
+    "\\textures"
   ],
-  "SelectedNode": "\\screen_gp.glsl",
+  "SelectedNode": "\\textures",
   "PreviewInSolutionExplorer": false
 }

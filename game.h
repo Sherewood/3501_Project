@@ -16,7 +16,6 @@
 #include "camera.h"
 #include "asteroid.h"
 #include "Light.h"
-#include "Paper.h"
 
 namespace game {
 

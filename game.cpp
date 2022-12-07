@@ -21,7 +21,7 @@ const bool window_full_screen_g = false;
 float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
-const glm::vec3 viewport_background_color_g(0, 255, 255);
+const glm::vec3 viewport_background_color_g(0, 0, 0);
 glm::vec3 camera_position_g(0., 20.0, -1000.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
@@ -31,6 +31,7 @@ bool dooropen=false;
 bool start=true;
 bool end=false;
 bool game=false;
+bool pause = true;
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
@@ -119,31 +120,34 @@ void Game::InitEventHandlers(void){
 
 
 void Game::SetupResources(void){
-
+    std::cout << "a" << ::std::endl;
     // Create geometry of the objects
     resman_.CreateCylinder("Square",1.0, 0.5, 4, 4);
-	resman_.CreateTorus("SimpleTorusMesh", 0.8, 0.35, 30, 30);
+    std::cout << "b" << ::std::endl;
+    resman_.CreateCylinder("FlatSurface", 1.0, 0.5, 2, 2);
+    std::cout << "c" << ::std::endl;
+    resman_.CreateTorus("SimpleTorusMesh", 0.8, 0.35, 30, 30);
 	resman_.CreateSeamlessTorus("SeamlessTorusMesh", 0.8, 0.35, 80, 80);
-	resman_.CreateWall("FlatSurface");
 	resman_.CreateCylinder("SimpleCylinderMesh", 2.0, 0.4, 30, 30);
     resman_.CreateSphere("SimpleSphere");
+    std::cout << "d" << ::std::endl;
     //MATERIALS
     // Load shader for texture mapping
 	std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
 	resman_.LoadResource(Material, "TextureShader", filename.c_str());
-
+    std::cout << "e" << ::std::endl;
 	// shader for corona effect
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/corona");
 	resman_.LoadResource(Material, "Procedural", filename.c_str());
-
+    std::cout << "f" << ::std::endl;
 	// shader for checkerboard effect
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/rectangle");
 	resman_.LoadResource(Material, "Blocks", filename.c_str());
-
+    std::cout << "g" << ::std::endl;
     //shader for checkerboard
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/procedural");
     resman_.LoadResource(Material, "prod", filename.c_str());
-
+    std::cout << "h" << ::std::endl;
     //new shader
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/new_shd");
     resman_.LoadResource(Material, "Nova", filename.c_str());
@@ -153,7 +157,7 @@ void Game::SetupResources(void){
     //particles
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/duststorm");
     resman_.LoadResource(Material, "DustMaterial", filename.c_str());
-
+    std::cout << "i" << ::std::endl;
 	// shader for 3-term lighting effect
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
 	resman_.LoadResource(Material, "Lighting", filename.c_str());
@@ -182,6 +186,8 @@ void Game::SetupResources(void){
     //TEXTURES
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/rocky.png");
 	resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cube.png");
+    resman_.LoadResource(Texture, "CubeTest", filename.c_str());
 	// Load texture to be used on the object
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/download.jpg");
 	resman_.LoadResource(Texture, "WoodTexture", filename.c_str());
@@ -198,7 +204,7 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cement.jpg");
     resman_.LoadResource(Texture, "Concrete", filename.c_str());
  
-
+    std::cout << "j" << ::std::endl;
 
     //World objects 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_main.obj");//texture steel
@@ -218,7 +224,7 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Boar.obj");//texture stainless
     resman_.LoadResource(Mesh, "Boar", filename.c_str());
 
-
+    std::cout << "k" << ::std::endl;
     //particles
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/spark");
     resman_.LoadResource(Material, "SparkMaterial", filename.c_str());
@@ -230,25 +236,26 @@ void Game::SetupResources(void){
     //SCREEN EFFECTS
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Radsuit");
     resman_.LoadResource(Material, "Radsuit", filename.c_str());
-
+    std::cout << "l" << ::std::endl;
 }
 
 
 void Game::SetupScene(void){
-
+    std::cout << "j" << ::std::endl;
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
-        game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting", "Water");
-    Skybox->SetPosition(glm::vec3(camera_.GetPosition()));
-    Skybox->Scale(glm::vec3(10, 10, 10));
-
+    game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting", "CubeTest");
+    Skybox->SetPosition(glm::vec3(0, 0.0,0));
+    Skybox->SetPosition(glm::vec3(0., 40.0, -1100.0));
+ //   Skybox->Scale(glm::vec3(1000, 1000,1000));
+    std::cout << "j1" << ::std::endl;
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
     light->Translate(glm::vec3(0, 10000, -10));
     light->Scale(glm::vec3(100, 100,100));
     scene_.Setlight(light);
- 
+    std::cout << "j2" << ::std::endl;
 //    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
 //    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 //    ground->Translate(glm::vec3(0, -5, 0));
@@ -274,19 +281,23 @@ void Game::SetupScene(void){
     	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
   
     */
-    
+    std::cout << "j3" << ::std::endl;
     // lore instance 
-    
-		
+    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "DripMaterial", "Title_1");
+    std::cout << "j3" << ::std::endl;
+    title->SetPosition(camera_.GetPosition());
+    title->SetScale(glm::vec3(1000, 1000, 1000));
+    std::cout << "k" << ::std::endl;
 }
 
 
 void Game::MainLoop(void){
 	float bleh = 0;
+    std::cout << "m" << ::std::endl;
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
         // Animate the scene
-        if (animating_){
+        if (animating_ && !pause){
             static double last_time = 0;
             double current_time = glfwGetTime();
             if ((current_time - last_time) > 0.01)
@@ -339,19 +350,25 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_Q && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
-
+    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
+        game->controlCursor_ = !game->controlCursor_;
+    }
     // Stop animation if space bar is pressed
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }
     SceneNode* halo = game->scene_.GetNode("ParticleInstance");
+    SceneNode* skybox = game->scene_.GetNode("Skybox");
     // View control
     float rot_factor(glm::pi<float>() / 180);
     float trans_factor = 10.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
-    if (key == GLFW_KEY_DOWN){
+    if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+        pause = !pause;
+    }
+/*   if (key == GLFW_KEY_DOWN) {
         game->camera_.Pitch(-rot_factor);
     }
     if (key == GLFW_KEY_LEFT){
@@ -365,33 +382,42 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_X) {
         game->camera_.Roll(rot_factor);
-    }
-    if (key == GLFW_KEY_W) {
-        game->camera_.Translate(game->camera_.GetForward() * trans_factor);
-        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-    }
-    if (key == GLFW_KEY_S) {
-        game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
-        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-    }
-    if (key == GLFW_KEY_A) {
-        game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
-        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-    }
-    if (key == GLFW_KEY_D) {
-        game->camera_.Translate(game->camera_.GetSide() * trans_factor);
-        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-    }
-    if (key == GLFW_KEY_R) {
-        game->camera_.Translate(game->camera_.GetUp() * trans_factor);
-        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-    }
-    if (key == GLFW_KEY_E) {
-        game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
-        halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-    }
-    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
-        game->controlCursor_ = !game->controlCursor_;
+    }*/ 
+    if (pause==false)
+    { 
+        if (key == GLFW_KEY_W) {
+            game->camera_.Translate(game->camera_.GetForward() * trans_factor);
+            halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+        }
+        if (key == GLFW_KEY_S) {
+            game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
+            halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+        }
+        if (key == GLFW_KEY_A) {
+            game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
+            halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+        }
+        if (key == GLFW_KEY_D) {
+            game->camera_.Translate(game->camera_.GetSide() * trans_factor);
+            halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+        }
+        if (key == GLFW_KEY_R) {
+            game->camera_.Translate(game->camera_.GetUp() * trans_factor);
+            halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+        }
+        if (key == GLFW_KEY_E) {
+            game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
+            halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+        }
+        if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
+            game->controlCursor_ = !game->controlCursor_;
+        }
     }
 }
 
