@@ -158,9 +158,9 @@ void Game::SetupResources(void){
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
 	resman_.LoadResource(Material, "Lighting", filename.c_str());
     //Lore materials
-  /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
-    resman_.LoadResource(Material, "Title_1", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro Lore.png");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
+    resman_.LoadResource(Texture, "Title_1", filename.c_str());
+    /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro Lore.png");
     resman_.LoadResource(Material, "Intro_2", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
     resman_.LoadResource(Material, "Welcome_3", filename.c_str());
@@ -297,6 +297,8 @@ void Game::MainLoop(void){
                         if (node->collided())
                         {
                             std::cout << "HEHAHE" << ::std::endl;
+                            /* commented code, should workd to get phases
+                            */
                         }
                 }
                 // Animate the scene
