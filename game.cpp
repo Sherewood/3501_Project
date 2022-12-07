@@ -121,7 +121,7 @@ void Game::InitEventHandlers(void){
 void Game::SetupResources(void){
 
     // Create geometry of the objects
-    resman_.CreateSquare("Square");
+    resman_.CreateCylinder("Square",1.0, 0.5, 4, 4);
 	resman_.CreateTorus("SimpleTorusMesh", 0.8, 0.35, 30, 30);
 	resman_.CreateSeamlessTorus("SeamlessTorusMesh", 0.8, 0.35, 80, 80);
 	resman_.CreateWall("FlatSurface");
@@ -231,9 +231,9 @@ void Game::SetupScene(void){
 
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
-        game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting");
-    Skybox->SetPosition(glm::vec3((0., -10, -990.0)));
-    Skybox->Scale(glm::vec3(1000, 1000, 1000));
+        game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting", "Water");
+    Skybox->SetPosition(glm::vec3(camera_.GetPosition()));
+    Skybox->Scale(glm::vec3(10, 10, 10));
 
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
