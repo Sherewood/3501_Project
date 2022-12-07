@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\LORE",
+    "\\Meshes",
     "\\textures"
   ],
-  "SelectedNode": "\\textures",
+  "SelectedNode": "\\scene_graph.cpp",
   "PreviewInSolutionExplorer": false
 }

@@ -32,6 +32,7 @@ bool start=true;
 bool end=false;
 bool game=false;
 bool pause = true;
+bool game_completed = false;
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
@@ -223,6 +224,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "paper", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Boar.obj");//texture stainless
     resman_.LoadResource(Mesh, "Boar", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/MemoryCard.obj");//no texutre
+    resman_.LoadResource(Mesh, "Key", filename.c_str());
 
     std::cout << "k" << ::std::endl;
     //particles
@@ -316,10 +319,17 @@ void Game::MainLoop(void){
                         if (node->collided())
                         {
                             std::cout << "HEHAHE" << ::std::endl;
-                            /* commented code, should workd to get phases
+                            /* 
+                            * If A trigger has been pressed in camera, the code here should take one of the instances of the game screens and bring it in front of the player 
+                            * depending on what is contained in the lore value in node, the screen loads up the right one 
                             */
                         }
+                        // if the items have all been aquired, writes a call to spawn a key item
+
+
+                        
                 }
+                // if there is a collision with a node that protects the door, this function moves the player back and shows a screen. 
                 // Animate the scene
                 
 
