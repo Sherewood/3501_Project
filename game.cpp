@@ -157,6 +157,9 @@ void Game::SetupResources(void){
 	// shader for 3-term lighting effect
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
 	resman_.LoadResource(Material, "Lighting", filename.c_str());
+    //custom effect for project 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen");
+    resman_.LoadResource(Material, "Screen", filename.c_str());
     //Lore materials
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
     resman_.LoadResource(Texture, "Title_1", filename.c_str());
@@ -224,6 +227,10 @@ void Game::SetupResources(void){
     resman_.CreateSphereParticles("SphereParticles1", 25);
     resman_.CreateSparkParticles("SparkParticles", camera_.GetPosition());
 
+    //SCREEN EFFECTS
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/Radsuit");
+    resman_.LoadResource(Material, "Radsuit", filename.c_str());
+
 }
 
 
@@ -268,6 +275,7 @@ void Game::SetupScene(void){
   
     */
     
+    // lore instance 
     
 		
 }
