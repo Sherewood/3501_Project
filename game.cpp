@@ -312,9 +312,10 @@ void Game::MainLoop(void){
                         glm::quat rotation = glm::angleAxis(0.95f * glm::pi<float>() / 180.0f, glm::vec3(0.0, 0.0, 1.0));
                         node->Translate(glm::vec3(0, sin(current_time)/100, 0));
                         node->Rotate(rotation);
-                        if (node->collided())
+                        if (node->collided(camera_.GetPosition()))
                         {
                             std::cout << "HEHAHE" << ::std::endl;
+                            
                             /* 
                             * If A trigger has been pressed in camera, the code here should take one of the instances of the game screens and bring it in front of the player 
                             * depending on what is contained in the lore value in node, the screen loads up the right one 

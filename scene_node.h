@@ -62,7 +62,7 @@ namespace game {
             void Attach(SceneNode* parent, float level);
 
             //Collision function USE THIS FOR COLLISION
-            bool collided(); // function for collision. May need extra details 
+            bool collided(glm::vec3); // function for collision. May need extra details 
        
 
         private:

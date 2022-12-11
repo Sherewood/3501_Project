@@ -257,7 +257,15 @@ void SceneNode::SetupShader(GLuint program,SceneNode *l){
     double current_time = glfwGetTime();
     glUniform1f(timer_var, (float) current_time);
 }
-bool SceneNode::collided() {
+bool SceneNode::collided(glm::vec3 pos2) {
+    //get the positions of the bullet and target asteroid
+    glm::vec3 pos1 = position_;
+
+    //compare the distance between them
+    if (glm::distance(pos1, pos2) < 3) {
+        //if they collide delete the bullet and asteroid
+        return true;
+    }
     return false;
 }
 } // namespace game;
