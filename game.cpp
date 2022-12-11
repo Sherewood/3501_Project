@@ -18,11 +18,11 @@ const unsigned int window_height_g = 600;
 const bool window_full_screen_g = false;
 
 // Viewport and camera settings
-float camera_near_clip_distance_g = 0.01;
-float camera_far_clip_distance_g = 1000.0;
+float camera_near_clip_distance_g = 0.001;
+float camera_far_clip_distance_g = 10000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0, 0, 0);
-glm::vec3 camera_position_g(0., 20.0, -1000.0);
+glm::vec3 camera_position_g(-450, 60, -1000.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
@@ -31,7 +31,7 @@ bool dooropen=false;
 bool start=true;
 bool end=false;
 bool game=false;
-bool pause = true;
+bool pause = false;
 bool game_completed = false;
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
@@ -187,7 +187,7 @@ void Game::SetupResources(void){
     //TEXTURES
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/rocky.png");
 	resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/cube.png");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/Day.jpg");
     resman_.LoadResource(Texture, "CubeTest", filename.c_str());
 	// Load texture to be used on the object
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/download.jpg");
@@ -232,7 +232,7 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/spark");
     resman_.LoadResource(Material, "SparkMaterial", filename.c_str());
     // Create particles for explosion
-    resman_.CreateSphereDustParticles("SphereParticles", 100);
+    resman_.CreateSphereDustParticles("SphereParticles", 1000);
     resman_.CreateSphereParticles("SphereParticles1", 25);
     resman_.CreateSparkParticles("SparkParticles", camera_.GetPosition());
 
@@ -244,13 +244,13 @@ void Game::SetupResources(void){
 
 
 void Game::SetupScene(void){
+    
     std::cout << "j" << ::std::endl;
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
     game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting", "CubeTest");
-    Skybox->SetPosition(glm::vec3(0, 0.0,0));
-    Skybox->SetPosition(glm::vec3(0., 40.0, -1100.0));
- //   Skybox->Scale(glm::vec3(1000, 1000,1000));
+    Skybox->SetPosition(glm::vec3(0, 0, 0));
+    Skybox->Scale(glm::vec3(glm::vec3(9000,9000,9000)));
     std::cout << "j1" << ::std::endl;
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
@@ -268,29 +268,25 @@ void Game::SetupScene(void){
     //facto->Scale(glm::vec3(10, 10,10));
     //facto->Translate(glm::vec3(0, -2, -20));
     
-
+    
     // Create particles
     //environmental effect, takes form of a massive sand/dust storm. Holds around 10000 particles and basically fills the screen. 
     game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
-    /*
-    //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
-    game::SceneNode* particles_1 = CreateInstance("ParticleInstance_Project1", "SphereParticles1", "DripMaterial", "Water");
-    particles_1->SetPosition(glm::vec3(camera_.GetPosition().x - 1, camera_.GetPosition().y, 0));
-    game::SceneNode* particles_2 = CreateInstance("ParticleInstance_Project2", "SphereParticles1", "DripMaterial", "Water");
-    particles_2->SetPosition(glm::vec3(camera_.GetPosition().x + 1, camera_.GetPosition().y, 0));
-    //particles to represent sparks for electricity or grinding metal
-    game::SceneNode* particles_3 = CreateInstance("ParticleInstance_3", "SparkParticles", "SparkMaterial", "Water");
+ 
+
     initalizeMap();
-    	game::SceneNode* mytorus = CreateInstance("MyTorus1", "SeamlessTorusMesh", "Lighting", "RockyTexture");
+   
   
-    */
+   /*
     std::cout << "j3" << ::std::endl;
     // lore instance 
-    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "DripMaterial", "Title_1");
+    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "Screen", "Title_1");
     std::cout << "j3" << ::std::endl;
     title->SetPosition(camera_.GetPosition());
     title->SetScale(glm::vec3(1000, 1000, 1000));
     std::cout << "k" << ::std::endl;
+     */
+  
 }
 
 
@@ -398,32 +394,34 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (key == GLFW_KEY_W) {
             game->camera_.Translate(game->camera_.GetForward() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+
         }
         if (key == GLFW_KEY_S) {
             game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+
         }
         if (key == GLFW_KEY_A) {
             game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+
         }
         if (key == GLFW_KEY_D) {
             game->camera_.Translate(game->camera_.GetSide() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+
         }
+        // Do we need these controls?
+
         if (key == GLFW_KEY_R) {
             game->camera_.Translate(game->camera_.GetUp() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+
         }
         if (key == GLFW_KEY_E) {
             game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
-            skybox->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
+
         }
         if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
             game->controlCursor_ = !game->controlCursor_;
@@ -524,10 +522,10 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
 
 void Game::initalizeMap() {
     //inital map
-    //create a flesh object and move it into place
+    //OBJECTS LOADING IN
     game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main factory building
 
-    factory->Scale(glm::vec3(.1, .1, .1));
+    factory->Scale(glm::vec3(.5, .5, .3));
     factory->Translate(glm::vec3(0, -2, -20));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 
     land->Attach(factory, 0);
@@ -541,31 +539,67 @@ void Game::initalizeMap() {
     reactor->Attach(factory, 0);
     game::SceneNode* page = CreateInstance("Page_0", "paper", "Lighting","Flesh");
     page->Attach(factor_int_2, 0);
-    float placerng = (-100 + rand() % (100 - (-100) + 1));
-    float placerngz = (-10 + rand() % (10 - (-10) + 1));
-    page->Translate(glm::vec3(0, 5, 0));
-    page->Scale(glm::vec3(.09, .09, .09));
+    float placerng = rand() % rand() % (2 + 1) + (-25);
+    float placerngz = rand() % (100 + 1) + (-100);
+    page->Translate(glm::vec3(placerng, 10, placerngz));
+    page->Scale(glm::vec3(.5, 1, 1));
+
+
     glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
  
     //page->Translate(glm::vec3(0))
     for (int i = 0; i < 8; i++)
     {
-        float placerngx = (-100 + rand() % (100 - (-100) + 1));
-        placerngz = (-10 + rand() % (10 - (-10) + 1));
+        float placerngx = rand() % (1 + 1) + (-50);
+        float placerngz = rand() % (1000 + 1) + (-1000);
         items.push_back(page);
         std::stringstream ss;
         ss << i;
         std::string index = ss.str();
         std::string name = "Page_" + index;
         page = CreateInstance(name, "paper", "Lighting","Flesh");
-        page->Translate(glm::vec3(placerngx, 5, placerngz));
-        page->Scale(glm::vec3(.09, .09, .09));
+        page->Attach(factor_int_2, 0);
+        page->Translate(glm::vec3(placerngx, 10, placerngz));
+        page->Scale(glm::vec3(.5, 1, 1));
         page->Rotate(rot);
+        ss << "X of " << i << ": " << placerngx << "Z of " <<i<<": " <<placerngz;
+        std::string test = ss.str();
+        std::cout << test << ::std::endl;
     }
 
     game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting", "Flesh");
-    boar->Translate(glm::vec3(3, 0, 0));
+    boar->Translate(glm::vec3(6, 5, 0));
+    boar->Scale(glm::vec3(10, 10, 10));
     boar->Attach(factory, 0);
+    // PARTICLES LOAD IN 
+    //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
+    for (int i = 0; i < 8; i++)
+    {
+        float placerngx = rand() % (25 + 1) + (-500);
+        float placerngz = rand() % (1000 + 1) + (-1000);
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "Drip_" + index;
+        game::SceneNode* particles_1 = CreateInstance(name, "SphereParticles1", "DripMaterial", "Water");
+        particles_1->Attach(factory, 0);
+        particles_1->Translate(glm::vec3(i+50, 500, i));
+        particles_1->Scale(glm::vec3(5, 5, 5));
+    }
+    for (int i = 0; i < 8; i++)
+    {
+        float placerngx = rand() % (25 + 1) + (-500);
+        float placerngz = rand() % (1000 + 1) + (-1000);
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "spark_" + index;
+        game::SceneNode* particles_3 = CreateInstance(name, "SparkParticles", "SparkMaterial", "Water");
+        particles_3->Attach(factor_int_2, 0);
+        particles_3->Translate(glm::vec3(placerngx, 10, placerngz));
+        particles_3->Scale(glm::vec3(5, 5, 5));
+    }
+    //particles to represent sparks for electricity or grinding metal
 
 
 }

@@ -2,9 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\LORE",
-    "\\Meshes",
     "\\textures"
   ],
-  "SelectedNode": "\\main.cpp",
+  "SelectedNode": "\\screen_vp.glsl",
   "PreviewInSolutionExplorer": false
 }
