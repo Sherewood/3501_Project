@@ -163,20 +163,20 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
     resman_.LoadResource(Texture, "Title_1", filename.c_str());
     //I don't know why but literally only title is working fml 
-  /*   filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro.png");
-    resman_.LoadResource(Material, "Intro_2", filename.c_str());
-       filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
-    resman_.LoadResource(Material, "Welcome_3", filename.c_str());
+   filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro.png");
+    resman_.LoadResource(Texture, "Intro_2", filename.c_str());
+    /*     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
+    resman_.LoadResource(Texture, "Welcome_3", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/letter home.png");
-    resman_.LoadResource(Material, "letter_4", filename.c_str());/*
+    resman_.LoadResource(Texture, "letter_4", filename.c_str());/*
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/peter's message.png");
-    resman_.LoadResource(Material, "peter_5", filename.c_str());
+    resman_.LoadResource(Texture, "peter_5", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/results.png");
-    resman_.LoadResource(Material, "results_6", filename.c_str());
+    resman_.LoadResource(texture, "results_6", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Diary.png");
-    resman_.LoadResource(Material, "Diary_7", filename.c_str());
+    resman_.LoadResource(Texture, "Diary_7", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Last.png");
-    resman_.LoadResource(Material, "Last_8", filename.c_str());
+    resman_.LoadResource(Texture, "Last_8", filename.c_str());
     * Doesn't work yet so I don't think we can use screen effects, Unless we make a weirdass shader module*/
 	// Load texture to be used on the object
     //TEXTURES
@@ -277,7 +277,7 @@ void Game::SetupScene(void){
    
     std::cout << "j3" << ::std::endl;
     // lore instance 
-    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "TextureShader", "Welcome_3");
+    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "TextureShader", "Intro_2");
     std::cout << "j3" << ::std::endl;
     title->Translate(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y+1, camera_.GetPosition().z+15 ));
     title->SetScale(glm::vec3(7, 10, 10));
