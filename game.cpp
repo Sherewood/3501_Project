@@ -22,8 +22,8 @@ float camera_near_clip_distance_g = 0.001;
 float camera_far_clip_distance_g = 10000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0, 0, 0);
-glm::vec3 camera_position_g(-450, 60, -1000.0);
-glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
+glm::vec3 camera_position_g(-362.7216, 64.4653, -777.982);
+glm::vec3 camera_look_at_g(-400.7216, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
 
@@ -162,12 +162,13 @@ void Game::SetupResources(void){
     //Lore materials
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
     resman_.LoadResource(Texture, "Title_1", filename.c_str());
-    /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro Lore.png");
+    //I don't know why but literally only title is working fml 
+  /*   filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro.png");
     resman_.LoadResource(Material, "Intro_2", filename.c_str());
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
+       filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
     resman_.LoadResource(Material, "Welcome_3", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/letter home.png");
-    resman_.LoadResource(Material, "letter_4", filename.c_str());
+    resman_.LoadResource(Material, "letter_4", filename.c_str());/*
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/peter's message.png");
     resman_.LoadResource(Material, "peter_5", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/results.png");
@@ -276,10 +277,12 @@ void Game::SetupScene(void){
    
     std::cout << "j3" << ::std::endl;
     // lore instance 
-    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "TextureShader", "Title_1");
+    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "TextureShader", "Welcome_3");
     std::cout << "j3" << ::std::endl;
-    title->Translate(camera_.GetPosition());
-    title->SetScale(glm::vec3(1000, 1000, 1000));
+    title->Translate(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y+1, camera_.GetPosition().z+15 ));
+    title->SetScale(glm::vec3(7, 10, 10));
+
+
     std::cout << "k" << ::std::endl;
      
   
@@ -339,6 +342,7 @@ void Game::MainLoop(void){
         // Draw the scene
         //scene_.Draw(&camera_);
         //screen effect?
+        scene_.DrawToTexture(&camera_);
         if (scene_.pause)
         {
             std::cout << "wsdmpus" << std::endl;
@@ -375,7 +379,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     SceneNode* skybox = game->scene_.GetNode("Skybox");
     // View control
     float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 10.0;
+    float trans_factor = 2.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
@@ -434,6 +438,11 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
         if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
             game->controlCursor_ = !game->controlCursor_;
+        }
+        if (key == GLFW_KEY_M && action == GLFW_RELEASE) {
+            std::stringstream ss;
+            ss << "X coord :" << game->camera_.GetPosition().x << " Y coord :" << game->camera_.GetPosition().y << " Z coord :" << game->camera_.GetPosition().z;
+            std::cout << ss.str() << std::endl;
         }
     }
 }
