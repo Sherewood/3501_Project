@@ -26,13 +26,7 @@ glm::vec3 camera_position_g(-450, 60, -1000.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
-//world state booleans
-bool dooropen=false;
-bool start=true;
-bool end=false;
-bool game=false;
-bool pause = false;
-bool game_completed = false;
+
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
@@ -239,6 +233,8 @@ void Game::SetupResources(void){
     //SCREEN EFFECTS
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Radsuit");
     resman_.LoadResource(Material, "Radsuit", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
+    resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
     std::cout << "l" << ::std::endl;
 }
 
@@ -277,15 +273,15 @@ void Game::SetupScene(void){
     initalizeMap();
    
   
-   /*
+   
     std::cout << "j3" << ::std::endl;
     // lore instance 
-    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "Screen", "Title_1");
+    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "TextureShader", "Title_1");
     std::cout << "j3" << ::std::endl;
-    title->SetPosition(camera_.GetPosition());
+    title->Translate(camera_.GetPosition());
     title->SetScale(glm::vec3(1000, 1000, 1000));
     std::cout << "k" << ::std::endl;
-     */
+     
   
 }
 
@@ -296,12 +292,14 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
         // Animate the scene
-        if (animating_ && !pause){
+        if (animating_ ){
+            
             static double last_time = 0;
             double current_time = glfwGetTime();
-            if ((current_time - last_time) > 0.01)
+            if ((current_time - last_time) > 0.01 )
 			{
                 scene_.Update();
+                
                 for (int i = 0; i < items.size(); i++)
                 {
                         std::stringstream ss;
@@ -326,6 +324,7 @@ void Game::MainLoop(void){
 
                         
                 }
+
                 // if there is a collision with a node that protects the door, this function moves the player back and shows a screen. 
                 // Animate the scene
                 
@@ -333,11 +332,19 @@ void Game::MainLoop(void){
                 last_time = current_time;
 				
             }
+            
         }
 
-        // Draw the scene
-        scene_.Draw(&camera_);
 
+        // Draw the scene
+        //scene_.Draw(&camera_);
+        //screen effect?
+        if (scene_.pause)
+        {
+            std::cout << "wsdmpus" << std::endl;
+            scene_.DisplayTexture(resman_.GetResource("Radsuit")->GetResource());
+        }
+        scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
 
@@ -373,7 +380,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         game->camera_.Pitch(rot_factor);
     }
     if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
-        pause = !pause;
+        std::cout << "whumpus" << std::endl;
+        game->scene_.pause = !game->scene_.pause;
     }
 /*   if (key == GLFW_KEY_DOWN) {
         game->camera_.Pitch(-rot_factor);
@@ -390,7 +398,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_X) {
         game->camera_.Roll(rot_factor);
     }*/ 
-    if (pause==false)
+    if (game->scene_.pause==false)
     { 
         if (key == GLFW_KEY_W) {
             game->camera_.Translate(game->camera_.GetForward() * trans_factor);

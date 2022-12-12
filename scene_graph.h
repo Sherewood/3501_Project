@@ -67,12 +67,20 @@ namespace game {
         // Draw the scene into a texture
         void DrawToTexture(Camera* camera);
         // Process and draw the texture on the screen
-        void DisplayTexture(GLuint program, float timer);
+        void DisplayTexture(GLuint program);
         // Save texture to a file in ppm format
         void SaveTexture(char* filename);
         //due to the fact that we need light in functions inacessible to the game, this function and value will hold our light object/objects 
         void Setlight(SceneNode* light);
-        SceneNode* l;
+        SceneNode* l; //light object
+
+        //world state booleans
+        bool dooropen = false;
+        bool start = true;
+        bool finish = false;
+        bool game = false;
+        bool pause = false;
+        bool game_completed = false;
 
     }; // class SceneGraph
 

@@ -178,7 +178,7 @@ namespace game {
     }
 
 
-    void SceneGraph::DisplayTexture(GLuint program, float timer) {
+    void SceneGraph::DisplayTexture(GLuint program) {
 
         // Configure output to the screen
         //glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -201,7 +201,7 @@ namespace game {
 
         // Timer
         GLint timer_var = glGetUniformLocation(program, "timer");
-        float current_time = timer;
+        float current_time = glfwGetTime();
         glUniform1f(timer_var, current_time);
 
 
