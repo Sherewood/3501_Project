@@ -201,7 +201,9 @@ namespace game {
 
         // Timer
         GLint timer_var = glGetUniformLocation(program, "timer");
-        float current_time = glfwGetTime();
+        float current_time;
+        if (suited) current_time = glfwGetTime() - Savedtimer;
+        else current_time = glfwGetTime();
         glUniform1f(timer_var, current_time);
 
 

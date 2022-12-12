@@ -81,6 +81,9 @@ namespace game {
         bool game = false;
         bool pause = false;
         bool game_completed = false;
+        bool cutscene = true;
+        bool suited = false;
+        float Savedtimer;
 
     }; // class SceneGraph
 

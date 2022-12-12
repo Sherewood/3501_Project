@@ -63,7 +63,10 @@ namespace game {
 
             //Collision function USE THIS FOR COLLISION
             bool collided(glm::vec3); // function for collision. May need extra details 
-       
+            // phases booleans
+            std::string lore = "";
+            bool projecting = false;
+         
 
         private:
             std::string name_; // Name of the scene node
@@ -82,7 +85,7 @@ namespace game {
             glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
             bool have; //boolean to be used whenever a node object is "picked up" by the player
             float radius = 10.0f;
-            std::string lore = "";
+            
 
 
             // Set matrices that transform the node in a shader program

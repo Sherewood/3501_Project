@@ -26,7 +26,8 @@ glm::vec3 camera_position_g(-362.7216, 64.4653, -777.982);
 glm::vec3 camera_look_at_g(-400.7216, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
-
+std::string phase_name = "Title"; // string used to find the right phase. defaults to title 
+game::SceneNode* phase; //default pointer to phase
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
@@ -115,6 +116,8 @@ void Game::InitEventHandlers(void){
 
 
 void Game::SetupResources(void){
+
+    scene_.SetupDrawToTexture();
     std::cout << "a" << ::std::endl;
     // Create geometry of the objects
     resman_.CreateCylinder("Square",1.0, 0.5, 4, 4);
@@ -161,23 +164,23 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "Screen", filename.c_str());
     //Lore materials
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Title.png");
-    resman_.LoadResource(Texture, "Title_1", filename.c_str());
+    resman_.LoadResource(Texture, "Title", filename.c_str());
     //I don't know why but literally only title is working fml 
    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Intro.png");
-    resman_.LoadResource(Texture, "Intro_2", filename.c_str());
-    /*     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
-    resman_.LoadResource(Texture, "Welcome_3", filename.c_str());
+    resman_.LoadResource(Texture, "Intro", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Welcome message.png");
+    resman_.LoadResource(Texture, "Welcome", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/letter home.png");
-    resman_.LoadResource(Texture, "letter_4", filename.c_str());/*
+    resman_.LoadResource(Texture, "Letter", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/peter's message.png");
-    resman_.LoadResource(Texture, "peter_5", filename.c_str());
+    resman_.LoadResource(Texture, "Peter", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/results.png");
-    resman_.LoadResource(texture, "results_6", filename.c_str());
+    resman_.LoadResource(Texture, "Results", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Diary.png");
-    resman_.LoadResource(Texture, "Diary_7", filename.c_str());
+    resman_.LoadResource(Texture, "Diary", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Last.png");
-    resman_.LoadResource(Texture, "Last_8", filename.c_str());
-    * Doesn't work yet so I don't think we can use screen effects, Unless we make a weirdass shader module*/
+    resman_.LoadResource(Texture, "Last", filename.c_str());
+    // Doesn't work yet so I don't think we can use screen effects, Unless we make a weirdass shader module
 	// Load texture to be used on the object
     //TEXTURES
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textures/rocky.png");
@@ -255,43 +258,30 @@ void Game::SetupScene(void){
     light->Translate(glm::vec3(0, 10000, -10));
     light->Scale(glm::vec3(100, 100,100));
     scene_.Setlight(light);
-    std::cout << "j2" << ::std::endl;
-//    game::SceneNode* ground = CreateInstance("Wall", "FlatSurface", "Lighting", "Grass");
-//    glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-//    ground->Translate(glm::vec3(0, -5, 0));
-//    ground->Scale(glm::vec3(500, 500, 500));
-//     ground->Rotate(rot);
-
-    //facto->Scale(glm::vec3(10, 10,10));
-    //facto->Translate(glm::vec3(0, -2, -20));
-    
     
     // Create particles
     //environmental effect, takes form of a massive sand/dust storm. Holds around 10000 particles and basically fills the screen. 
     game::SceneNode* particles = CreateInstance("ParticleInstance", "SphereParticles", "DustMaterial");
- 
+    
+
+    // Create an instance of the torus mesh
+    game::SceneNode* torus = CreateInstance("TorusInstance1", "SimpleTorusMesh", "Lighting");
+    // Scale the instance
+    torus->Scale(glm::vec3(1.5, 1.5, 1.5));
 
     initalizeMap();
    
   
-   
-    std::cout << "j3" << ::std::endl;
-    // lore instance 
-    game::SceneNode* title = CreateInstance("Screen_1", "FlatSurface", "TextureShader", "Intro_2");
-    std::cout << "j3" << ::std::endl;
-    title->Translate(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y+1, camera_.GetPosition().z+15 ));
-    title->SetScale(glm::vec3(7, 10, 10));
-
-
-    std::cout << "k" << ::std::endl;
      
   
 }
 
 
 void Game::MainLoop(void){
+
 	float bleh = 0;
     std::cout << "m" << ::std::endl;
+    phase = scene_.GetNode(phase_name);
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
         // Animate the scene
@@ -299,8 +289,16 @@ void Game::MainLoop(void){
             
             static double last_time = 0;
             double current_time = glfwGetTime();
+
             if ((current_time - last_time) > 0.01 )
 			{
+                if (scene_.start )
+                {
+                    
+                    phase->SetPosition(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y + 1, camera_.GetPosition().z + 15));
+                    phase->projecting = true;
+
+                }
                 scene_.Update();
                 
                 for (int i = 0; i < items.size(); i++)
@@ -315,12 +313,12 @@ void Game::MainLoop(void){
                         node->Rotate(rotation);
                         if (node->collided(camera_.GetPosition()))
                         {
-                            std::cout << "HEHAHE" << ::std::endl;
+                           
                             
                             /* 
                             * If A trigger has been pressed in camera, the code here should take one of the instances of the game screens and bring it in front of the player 
-                            * depending on what is contained in the lore value in node, the screen loads up the right one 
-                            */
+                            * depending on what is contained in the lore value in node, the screen loads up the right one */
+                           
                         }
                         // if the items have all been aquired, writes a call to spawn a key item
 
@@ -338,17 +336,20 @@ void Game::MainLoop(void){
             
         }
 
-
         // Draw the scene
         //scene_.Draw(&camera_);
         //screen effect?
         scene_.DrawToTexture(&camera_);
-        if (scene_.pause)
+        if (scene_.suited)
         {
-            std::cout << "wsdmpus" << std::endl;
+
             scene_.DisplayTexture(resman_.GetResource("Radsuit")->GetResource());
+
         }
-        scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+        else
+        {
+            scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+        }
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
 
@@ -379,15 +380,15 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     SceneNode* skybox = game->scene_.GetNode("Skybox");
     // View control
     float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 2.0;
+    float trans_factor = 5.0;
     if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
-    if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_F && action == GLFW_PRESS) {
         std::cout << "whumpus" << std::endl;
         game->scene_.pause = !game->scene_.pause;
     }
-/*   if (key == GLFW_KEY_DOWN) {
+   if (key == GLFW_KEY_DOWN) {
         game->camera_.Pitch(-rot_factor);
     }
     if (key == GLFW_KEY_LEFT){
@@ -401,7 +402,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_X) {
         game->camera_.Roll(rot_factor);
-    }*/ 
+    }
     if (game->scene_.pause==false)
     { 
         if (key == GLFW_KEY_W) {
@@ -443,6 +444,11 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             std::stringstream ss;
             ss << "X coord :" << game->camera_.GetPosition().x << " Y coord :" << game->camera_.GetPosition().y << " Z coord :" << game->camera_.GetPosition().z;
             std::cout << ss.str() << std::endl;
+        }
+        if (key == GLFW_KEY_Y && action == GLFW_PRESS) {
+            game->scene_.suited = !game->scene_.suited;
+            game->scene_.Savedtimer = glfwGetTime();
+
         }
     }
 }
@@ -576,11 +582,46 @@ void Game::initalizeMap() {
         std::string index = ss.str();
         std::string name = "Page_" + index;
         page = CreateInstance(name, "paper", "Lighting","Flesh");
-        page->Attach(factor_int_2, 0);
-        page->Translate(glm::vec3(placerngx, 10, placerngz));
-        page->Scale(glm::vec3(.5, 1, 1));
+        switch (i) {
+        case 0:
+            page->Translate(glm::vec3(473.632, 10, -78));
+            page->lore = resman_.GetResource("Title")->GetName();
+            break;
+        case 1:
+            page->Translate(glm::vec3(177.107, 10, -141.28));
+            page->lore = resman_.GetResource("Intro")->GetName();
+            break;
+        case 2:
+            page->Translate(glm::vec3(31.592, 10, -72.2487));
+            page->lore = resman_.GetResource("Welcome")->GetName();
+            break;
+        case 3:
+            page->Translate(glm::vec3(309.57, 10, -30.59));
+            page->lore = resman_.GetResource("Letter")->GetName();
+            break;
+
+        case 4:
+            page->Translate(glm::vec3(33.63, 10, 57.78));
+            page->lore = resman_.GetResource("Peter")->GetName();
+            break;
+        case 5:
+            page->Translate(glm::vec3(330.1, 10, 83.51));
+            page->lore = resman_.GetResource("Results")->GetName();
+            break;
+        case 6:
+            page->Translate(glm::vec3(141.23, 10, 135.13));
+            page->lore = resman_.GetResource("Diary")->GetName();
+            break;
+        case 7:
+            page->Translate(glm::vec3(162.4, 10, 5.98));
+            page->lore = resman_.GetResource("Last")->GetName();
+            break;
+        }
+      //  page->Attach(factor_int_2, 0);
+    //    page->Translate(glm::vec3(placerngx, 10, placerngz));
+        page->Scale(glm::vec3(.1, .1, .1));
         page->Rotate(rot);
-        ss << "X of " << i << ": " << placerngx << "Z of " <<i<<": " <<placerngz;
+        ss << "X of " << i << ": " << page->GetPosition().x << "Z of " << i << ": " << page->GetPosition().z;
         std::string test = ss.str();
         std::cout << test << ::std::endl;
     }
@@ -619,7 +660,49 @@ void Game::initalizeMap() {
     }
     //particles to represent sparks for electricity or grinding metal
 
+    // Creating the Phase screens, used to exposite onto the player+ act as our start and end screens. will put them under the game world so that they can come when they are needed 
+    //Start screen
+    game::SceneNode* title = CreateInstance("Title", "FlatSurface", "TextureShader", "Title");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //Intro screen
+    title = CreateInstance("Intro", "FlatSurface", "TextureShader", "Intro");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //expo 1 screen
+    title = CreateInstance("Welcome", "FlatSurface", "TextureShader", "Welcome");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //expo 2 screen
+    title = CreateInstance("Letter", "FlatSurface", "TextureShader", "Letter");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //expo 3 screen
+    title = CreateInstance("Peter", "FlatSurface", "TextureShader", "Peter");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //expo 4 screen
+    title = CreateInstance("Results", "FlatSurface", "TextureShader", "Results");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //expo 5 screen
+    title = CreateInstance("Diary", "FlatSurface", "TextureShader", "Diary");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //expo 6 screen
+    title = CreateInstance("Last", "FlatSurface", "TextureShader", "Last");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    //end screen
+ //   game::SceneNode* title = CreateInstance("Title", "FlatSurface", "TextureShader", "Title");
+//    title->Translate(glm::vec3(0, -100, 0));
+ //   title->SetScale(glm::vec3(7, 10, 10));
 
+}
+void Game::showToScreen(SceneNode* phase) {
+    phase->Translate(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y + 1, camera_.GetPosition().z + 15));
+    phase->projecting = true;
+    
 }
 
 } // namespace game

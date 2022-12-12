@@ -262,7 +262,7 @@ bool SceneNode::collided(glm::vec3 pos2) {
     glm::vec3 pos1 = position_;
 
     //compare the distance between them
-    if (glm::distance(pos1, pos2) < 3) {
+    if (glm::distance(pos1, pos2) < 10) {
         //if they collide delete the bullet and asteroid
         return true;
     }
