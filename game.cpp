@@ -348,7 +348,7 @@ void Game::MainLoop(void){
         }
         else
         {
-            scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+            scene_.Draw(&camera_);
         }
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
