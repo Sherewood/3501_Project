@@ -32,10 +32,10 @@ void main()
 	float spec = max(0,dot(vv,r));
 
 	spec = pow(spec,2);
-	vec4 ambcol = vec4(1,0,0,1);
+	vec4 ambcol = vec4(1,1,0,1);
 	//spec = 0;
 	//diffuse = 0;
-	float amb = 0.6;
+	float amb = 0.4;
 
 	//pixel = vec4(0.4,0.8,0.9,1.0);
 	    vec2 uv_=uv_interp;

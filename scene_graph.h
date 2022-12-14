@@ -72,18 +72,18 @@ namespace game {
         void SaveTexture(char* filename);
         //due to the fact that we need light in functions inacessible to the game, this function and value will hold our light object/objects 
         void Setlight(SceneNode* light);
-        void Removenode(SceneNode* remove);
+        
         SceneNode* l; //light object
 
-        //world state booleans
+        //world state booleans (those that are uncommented i dont think are being used)
         bool dooropen = false;
-        bool start = true;
-        bool finish = false;
+        bool start = true; //start of the game
+        bool finish = false; //end of the game
         bool game = false;
-        bool pause = false;
+        bool pause = true; //pausing the game
         bool game_completed = false;
         bool cutscene = true;
-        bool suited = false;
+        bool suited = false; // screen effect 
         float Savedtimer;
 
     }; // class SceneGraph

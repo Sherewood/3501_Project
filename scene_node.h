@@ -85,7 +85,7 @@ namespace game {
             glm::vec3 joint; //position where the node rotates on 
             glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
 
-            float radius = 10.0f;
+            float radius = 100.0f;
             
 
 

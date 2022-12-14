@@ -6,6 +6,8 @@
 #include <time.h>
 
 #include "scene_node.h"
+#include <sstream>
+using namespace std;
 
 namespace game {
 
@@ -260,9 +262,14 @@ void SceneNode::SetupShader(GLuint program,SceneNode *l){
 bool SceneNode::collided(glm::vec3 pos2) {
     //get the positions of the bullet and target asteroid
     glm::vec3 pos1 = position_;
-
+    stringstream ss;
+    ss << "Distance :" << glm::distance(pos1, pos2);
+    std::cout << ss.str() << std::endl;
     //compare the distance between them
-    if (glm::distance(pos1, pos2) < 100) {
+    //Editor note: Check out how distance is being calculated. The sums are massive and it makes collision difficult. Is there possibly an easier way to do this? with a range of 4000, collision will never proc, but with >5500, the collision happen all the time.
+    //Collision needs to be fixed.
+    if (glm::distance(pos1, pos2) < 4000) {
+        
         //if they collide delete the bullet and asteroid
         return true;
     }

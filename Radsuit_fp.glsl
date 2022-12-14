@@ -24,7 +24,7 @@ pixel = texture(texture_map,uv0);
 		
 		vec2 pos = uv0;
 	
-		float offset  = 0.05*(sin(timer*.76+15*pos.y));
+		float offset  = 0.05*(sin(timer*.15+3*pos.y));
 		pos.x = pos.x + offset;
 
 		pixel = texture(texture_map, pos) ;
