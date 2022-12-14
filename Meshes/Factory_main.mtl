@@ -1,7 +1,7 @@
-# Blender MTL File: 'None'
-# Material Count: 4
+# Blender MTL File: 'factory.blend'
+# Material Count: 3
 
-newmtl 01___Default.001
+newmtl 01___Default
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,8 +10,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
+map_Kd E:\\3501 assignments\\3501_Project\\textures\\flesh.jpg
 
-newmtl 02___Default.001
+newmtl 02___Default
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -20,18 +21,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
+map_Kd E:\\3501 assignments\\3501_Project\\textures\\dirtymetal.png
 
-newmtl Material
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-
-newmtl wire_214228153.001
+newmtl wire_214228153
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -40,3 +32,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
+map_Kd E:\\3501 assignments\\3501_Project\\textures\\cement.jpg

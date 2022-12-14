@@ -260,4 +260,5 @@ namespace game {
     }
     void SceneGraph::Setlight(SceneNode* sun) { l = sun; }
 
+
 } // namespace game

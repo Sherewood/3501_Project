@@ -1,7 +1,7 @@
 # Blender MTL File: 'factory.blend'
 # Material Count: 1
 
-newmtl wire_214228153
+newmtl 02___Default
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,3 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
+map_Kd E:\\3501 assignments\\3501_Project\\textures\\dirtymetal.png

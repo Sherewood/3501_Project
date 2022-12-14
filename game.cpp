@@ -208,6 +208,7 @@ void Game::SetupResources(void){
     //World objects 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_main.obj");//texture steel
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
+    std::cout << "j" << ::std::endl;
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/grasslands.obj");//texture grasslands
     resman_.LoadResource(Mesh, "Field", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/parking terrain.obj");//texture Yellow steel
@@ -250,8 +251,8 @@ void Game::SetupScene(void){
     scene_.SetBackgroundColor(viewport_background_color_g);
     game::SceneNode* Skybox = CreateInstance("Skybox", "Square", "Lighting", "CubeTest");
     Skybox->SetPosition(glm::vec3(0, 0, 0));
-    Skybox->Scale(glm::vec3(glm::vec3(9000,9000,9000)));
-    std::cout << "j1" << ::std::endl;
+    Skybox->Scale(glm::vec3(glm::vec3(9999,9999,9999)));
+    
     // Create an object for showing the texture
 	// instance contains identifier, geometry, shader, and texture
     game::SceneNode* light = CreateInstance("Lightbulb", "SimpleSphere", "Lighting", "WoodTexture");
@@ -281,53 +282,63 @@ void Game::MainLoop(void){
 
 	float bleh = 0;
     std::cout << "m" << ::std::endl;
-    phase = scene_.GetNode(phase_name);
+   
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
+
         // Animate the scene
         if (animating_ ){
-            
+            for (int i = 0; i < phases.size(); i++)
+            {
+                if (!display || phases[i]->projecting == true)
+                {
+                    phases[i]->SetPosition(glm::vec3(0, -100, 0));
+                    phases[i]->projecting = false;
+                }
+            }
+            for (int i = 0; i < items.size(); i++)
+            {
+                if (items[i]->lore==phase_name)
+                {
+                    items[i]->SetPosition(glm::vec3(0, -100, 0));
+                }
+            }
             static double last_time = 0;
             double current_time = glfwGetTime();
+            phase = scene_.GetNode(phase_name);
 
             if ((current_time - last_time) > 0.01 )
 			{
-                if (scene_.start )
+                scene_.Update();
+                bool completion = true;
+                if (display )
                 {
-                    
-                    phase->SetPosition(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y + 1, camera_.GetPosition().z + 15));
-                    phase->projecting = true;
+                    showToScreen(phase);
+
 
                 }
-                scene_.Update();
-                
+
                 for (int i = 0; i < items.size(); i++)
                 {
-                        std::stringstream ss;
-                        ss << i;
-                        std::string index = ss.str();
-                        std::string name = "Page_" + index;
-                        SceneNode *node = scene_.GetNode(name);
-                        glm::quat rotation = glm::angleAxis(0.95f * glm::pi<float>() / 180.0f, glm::vec3(0.0, 0.0, 1.0));
-                        node->Translate(glm::vec3(0, sin(current_time)/100, 0));
-                        node->Rotate(rotation);
-                        if (node->collided(camera_.GetPosition()))
-                        {
-                           
-                            
-                            /* 
-                            * If A trigger has been pressed in camera, the code here should take one of the instances of the game screens and bring it in front of the player 
-                            * depending on what is contained in the lore value in node, the screen loads up the right one */
-                           
-                        }
-                        // if the items have all been aquired, writes a call to spawn a key item
-
-
+                    glm::quat rotation = glm::angleAxis(0.95f * glm::pi<float>() / 180.0f, glm::vec3(0.0, 0.0, 1.0));
+                    items[i]->Translate(glm::vec3(0, sin(current_time) / 100, 0));
+                    items[i]->Rotate(rotation);
+                    if (items[i]->collided(camera_.GetPosition()))
+                    {
+                        std::cout << "abba" << ::std::endl;
+                        phase_name = items[i]->lore;
+                        items[i]->have = true;
+                    }
                         
                 }
 
                 // if there is a collision with a node that protects the door, this function moves the player back and shows a screen. 
                 // Animate the scene
+                if (scene_.GetNode("boar")->collided(camera_.GetPosition()))
+                {
+                    glfwSetWindowShouldClose(window_, true);
+                    //end game
+                }
                 
 
                 last_time = current_time;
@@ -385,8 +396,22 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         game->camera_.Pitch(rot_factor);
     }
     if (key == GLFW_KEY_F && action == GLFW_PRESS) {
-        std::cout << "whumpus" << std::endl;
+       
         game->scene_.pause = !game->scene_.pause;
+    }
+    if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+
+        if (game->scene_.start)
+        {
+            game->scene_.GetNode("Title")->projecting = false;
+            game->scene_.GetNode("Title")->SetPosition(glm::vec3(0, -100, 0));
+            phase_name = "Intro";
+            game->scene_.start = false;
+         }
+        else
+        {
+            game->display = !game->display;
+        }
     }
    if (key == GLFW_KEY_DOWN) {
         game->camera_.Pitch(-rot_factor);
@@ -550,7 +575,7 @@ void Game::initalizeMap() {
     game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main factory building
 
     factory->Scale(glm::vec3(.5, .5, .3));
-    factory->Translate(glm::vec3(0, -2, -20));
+    factory->SetPosition(glm::vec3(-2000, 0, 0));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 
     land->Attach(factory, 0);
     game::SceneNode* parking = CreateInstance("parking", "Parking", "Lighting", "Vine");
@@ -627,9 +652,9 @@ void Game::initalizeMap() {
     }
 
     game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting", "Flesh");
-    boar->Translate(glm::vec3(6, 5, 0));
-    boar->Scale(glm::vec3(10, 10, 10));
     boar->Attach(factory, 0);
+    boar->Scale(glm::vec3(10, 10, 10));
+    
     // PARTICLES LOAD IN 
     //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
     for (int i = 0; i < 8; i++)
@@ -665,42 +690,53 @@ void Game::initalizeMap() {
     game::SceneNode* title = CreateInstance("Title", "FlatSurface", "TextureShader", "Title");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //Intro screen
     title = CreateInstance("Intro", "FlatSurface", "TextureShader", "Intro");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //expo 1 screen
     title = CreateInstance("Welcome", "FlatSurface", "TextureShader", "Welcome");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //expo 2 screen
     title = CreateInstance("Letter", "FlatSurface", "TextureShader", "Letter");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //expo 3 screen
     title = CreateInstance("Peter", "FlatSurface", "TextureShader", "Peter");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //expo 4 screen
     title = CreateInstance("Results", "FlatSurface", "TextureShader", "Results");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //expo 5 screen
     title = CreateInstance("Diary", "FlatSurface", "TextureShader", "Diary");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //expo 6 screen
     title = CreateInstance("Last", "FlatSurface", "TextureShader", "Last");
     title->Translate(glm::vec3(0, -100, 0));
     title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
     //end screen
  //   game::SceneNode* title = CreateInstance("Title", "FlatSurface", "TextureShader", "Title");
 //    title->Translate(glm::vec3(0, -100, 0));
  //   title->SetScale(glm::vec3(7, 10, 10));
+    //phases.push_back(title);
 
 }
 void Game::showToScreen(SceneNode* phase) {
-    phase->Translate(glm::vec3(camera_.GetPosition().x, camera_.GetPosition().y + 1, camera_.GetPosition().z + 15));
+
+    phase->SetPosition(glm::vec3(camera_.GetPosition().x+(camera_.GetForward().x*15), camera_.GetPosition().y + 1, camera_.GetPosition().z + (camera_.GetForward().z * 15)));
+    phase->SetOrientation(camera_.GetOrientation());
     phase->projecting = true;
     
 }

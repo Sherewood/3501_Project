@@ -66,6 +66,7 @@ namespace game {
             // phases booleans
             std::string lore = "";
             bool projecting = false;
+            bool have=false; //boolean to be used whenever a node object is "picked up" by the player
          
 
         private:
@@ -83,7 +84,7 @@ namespace game {
             glm::mat4 parent; //reference to Parent transformation of the node
             glm::vec3 joint; //position where the node rotates on 
             glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
-            bool have; //boolean to be used whenever a node object is "picked up" by the player
+
             float radius = 10.0f;
             
 

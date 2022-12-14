@@ -46,6 +46,12 @@ namespace game {
             // Run the game: keep the application active
             void MainLoop(void); 
             static void CursorCallback(GLFWwindow* window, double xpos, double ypos);
+            bool dooropen;
+            bool start;
+            bool intro;
+            bool display = true;
+            bool end;
+            bool game;
 
         private:
             // GLFW window
@@ -68,10 +74,9 @@ namespace game {
             void InitView(void);
             void InitEventHandlers(void);
             std::vector<SceneNode*> items;
-            bool dooropen;
-            bool start;
-            bool end;
-            bool game;
+            std::vector<SceneNode*> phases;
+            //carries the phases 
+
  
             // Methods to handle events
             static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

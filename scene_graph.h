@@ -72,6 +72,7 @@ namespace game {
         void SaveTexture(char* filename);
         //due to the fact that we need light in functions inacessible to the game, this function and value will hold our light object/objects 
         void Setlight(SceneNode* light);
+        void Removenode(SceneNode* remove);
         SceneNode* l; //light object
 
         //world state booleans
