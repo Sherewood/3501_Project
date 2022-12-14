@@ -180,6 +180,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Diary", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/Last.png");
     resman_.LoadResource(Texture, "Last", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/LORE/End.png");
+    resman_.LoadResource(Texture, "End", filename.c_str());
     // Doesn't work yet so I don't think we can use screen effects, Unless we make a weirdass shader module
 	// Load texture to be used on the object
     //TEXTURES
@@ -586,13 +588,6 @@ void Game::initalizeMap() {
     factor_int_2->Attach(factory, 0);
    game::SceneNode* reactor = CreateInstance("ReactorDetail", "React_detail", "Lighting", "YSteel");
     reactor->Attach(factory, 0);
-    game::SceneNode* page = CreateInstance("Page_0", "paper", "Lighting","Flesh");
-    page->Attach(factor_int_2, 0);
-    float placerng = rand() % rand() % (2 + 1) + (-25);
-    float placerngz = rand() % (100 + 1) + (-100);
-    page->Translate(glm::vec3(placerng, 10, placerngz));
-    page->Scale(glm::vec3(.5, 1, 1));
-
 
     glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
  
@@ -601,88 +596,82 @@ void Game::initalizeMap() {
     {
         float placerngx = rand() % (1 + 1) + (-50);
         float placerngz = rand() % (1000 + 1) + (-1000);
-        items.push_back(page);
+        
         std::stringstream ss;
         ss << i;
         std::string index = ss.str();
         std::string name = "Page_" + index;
-        page = CreateInstance(name, "paper", "Lighting","Flesh");
+        game::SceneNode* page = CreateInstance(name, "paper", "Lighting","Flesh");
+        items.push_back(page);
+        
         switch (i) {
         case 0:
-            page->Translate(glm::vec3(473.632, 10, -78));
+            page->Translate(glm::vec3(615.329, 10, -735.46));
             page->lore = resman_.GetResource("Title")->GetName();
             break;
         case 1:
-            page->Translate(glm::vec3(177.107, 10, -141.28));
+            page->Translate(glm::vec3(605.7, 10, -655.79));
             page->lore = resman_.GetResource("Intro")->GetName();
             break;
         case 2:
-            page->Translate(glm::vec3(31.592, 10, -72.2487));
+            page->Translate(glm::vec3(336.04, 10, -677.69));
             page->lore = resman_.GetResource("Welcome")->GetName();
             break;
         case 3:
-            page->Translate(glm::vec3(309.57, 10, -30.59));
+            page->Translate(glm::vec3(573.65, 10, -505.441));
             page->lore = resman_.GetResource("Letter")->GetName();
             break;
 
         case 4:
-            page->Translate(glm::vec3(33.63, 10, 57.78));
+            page->Translate(glm::vec3(341.4, 10, -810.704));
             page->lore = resman_.GetResource("Peter")->GetName();
             break;
         case 5:
-            page->Translate(glm::vec3(330.1, 10, 83.51));
+            page->Translate(glm::vec3(537.02, 10, -858.78));
             page->lore = resman_.GetResource("Results")->GetName();
             break;
         case 6:
-            page->Translate(glm::vec3(141.23, 10, 135.13));
+            page->Translate(glm::vec3(725.504, 10, -861.7));
             page->lore = resman_.GetResource("Diary")->GetName();
             break;
         case 7:
-            page->Translate(glm::vec3(162.4, 10, 5.98));
+            page->Translate(glm::vec3(645.593, 10, -716.61));
             page->lore = resman_.GetResource("Last")->GetName();
             break;
         }
-      //  page->Attach(factor_int_2, 0);
+       
+        page->Attach(factor_int_2, 0);
     //    page->Translate(glm::vec3(placerngx, 10, placerngz));
-        page->Scale(glm::vec3(.1, .1, .1));
+        page->Scale(glm::vec3(100, 100, 100));
         page->Rotate(rot);
         ss << "X of " << i << ": " << page->GetPosition().x << "Z of " << i << ": " << page->GetPosition().z;
         std::string test = ss.str();
         std::cout << test << ::std::endl;
     }
-
+    //ONE TIME ITEMS. Theses are one time items to be made 
     game::SceneNode* boar = CreateInstance("boar", "Boar", "Lighting", "Flesh");
-    boar->Attach(factory, 0);
+    boar->SetPosition(glm::vec3(229.46, 5, -748.369));
     boar->Scale(glm::vec3(10, 10, 10));
+    game::SceneNode* key = CreateInstance("key", "Key", "Lighting");
+    key->SetPosition(glm::vec3(484.36, 20, -748.369));
+    key->Scale(glm::vec3(5, 5, 5));
+    key->Rotate(rot);
     
     // PARTICLES LOAD IN 
     //project particles, to be used in project, it is recommended that you comment out  'particles' to get a better view but they represent dripping water.
-    for (int i = 0; i < 8; i++)
-    {
-        float placerngx = rand() % (25 + 1) + (-500);
-        float placerngz = rand() % (1000 + 1) + (-1000);
-        std::stringstream ss;
-        ss << i;
-        std::string index = ss.str();
-        std::string name = "Drip_" + index;
-        game::SceneNode* particles_1 = CreateInstance(name, "SphereParticles1", "DripMaterial", "Water");
-        particles_1->Attach(factory, 0);
-        particles_1->Translate(glm::vec3(i+50, 500, i));
+
+    game::SceneNode* particles_1 = CreateInstance("Drip_1", "SphereParticles1", "DripMaterial", "Water");
+        particles_1->SetPosition(glm::vec3(423.27, 175.171, -702.455));
         particles_1->Scale(glm::vec3(5, 5, 5));
-    }
-    for (int i = 0; i < 8; i++)
-    {
-        float placerngx = rand() % (25 + 1) + (-500);
-        float placerngz = rand() % (1000 + 1) + (-1000);
-        std::stringstream ss;
-        ss << i;
-        std::string index = ss.str();
-        std::string name = "spark_" + index;
-        game::SceneNode* particles_3 = CreateInstance(name, "SparkParticles", "SparkMaterial", "Water");
-        particles_3->Attach(factor_int_2, 0);
-        particles_3->Translate(glm::vec3(placerngx, 10, placerngz));
-        particles_3->Scale(glm::vec3(5, 5, 5));
-    }
+    game::SceneNode* particles_2= CreateInstance("Drip_2", "SphereParticles1", "DripMaterial", "Water");
+    particles_2->SetPosition(glm::vec3(598.8, 71.058, -749.82));
+    particles_2->Scale(glm::vec3(5, 5, 5));
+    game::SceneNode* particles_3 = CreateInstance("Drip_3", "SphereParticles1", "DripMaterial", "Water");
+    particles_3->SetPosition(glm::vec3(568.303, 29.4, -819.64));
+    particles_3->Scale(glm::vec3(5, 5, 5));
+    game::SceneNode* particles_4 = CreateInstance("Sparks", "SparkParticles", "SparkMaterial");
+    particles_4->SetPosition(glm::vec3(761.572,17.756,-881.256));
+    particles_4->Scale(glm::vec3(5, 5, 5));
     //particles to represent sparks for electricity or grinding metal
 
     // Creating the Phase screens, used to exposite onto the player+ act as our start and end screens. will put them under the game world so that they can come when they are needed 
@@ -727,10 +716,10 @@ void Game::initalizeMap() {
     title->SetScale(glm::vec3(7, 10, 10));
     phases.push_back(title);
     //end screen
- //   game::SceneNode* title = CreateInstance("Title", "FlatSurface", "TextureShader", "Title");
-//    title->Translate(glm::vec3(0, -100, 0));
- //   title->SetScale(glm::vec3(7, 10, 10));
-    //phases.push_back(title);
+    title = CreateInstance("Title", "FlatSurface", "TextureShader", "End");
+    title->Translate(glm::vec3(0, -100, 0));
+    title->SetScale(glm::vec3(7, 10, 10));
+    phases.push_back(title);
 
 }
 void Game::showToScreen(SceneNode* phase) {
