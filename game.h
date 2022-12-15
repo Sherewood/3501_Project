@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/Noise.hpp>
 #include <vector>
+#include <cmath>
 
 
 #include "scene_graph.h"
@@ -69,6 +70,7 @@ namespace game {
             // Flag to turn animation on/off
             bool animating_;
             bool controlCursor_ = true;
+            bool noclip = false;
             // Methods to initialize the game
             void InitWindow(void);
             void InitView(void);
@@ -81,6 +83,12 @@ namespace game {
             // Methods to handle events
             static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
             static void ResizeCallback(GLFWwindow* window, int width, int height);
+
+            //height map creator and checker
+            float heightMap[251][151];
+            float checkHeightMap();
+            void updateHeightMap(SceneNode* data);
+            
 
             // Asteroid field
             // Create instance of one asteroid

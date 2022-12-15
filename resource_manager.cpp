@@ -877,7 +877,7 @@ void ResourceManager::LoadMesh(const std::string name, const char *filename){
     }
 
     // Debug
-    //print_mesh(mesh);
+    //if(name.compare("Field") == 0)print_mesh(mesh);
 
     // If we got to this point, the file was parsed successfully and the
     // mesh is in memory
@@ -1029,6 +1029,7 @@ void print_mesh(TriMesh &mesh){
             mesh.position[i].y << " " <<
             mesh.position[i].z << std::endl;
     }
+    /*
     for (unsigned int i = 0; i < mesh.normal.size(); i++){
         std::cout << "vn " <<
             mesh.normal[i].x << " " <<
@@ -1045,7 +1046,7 @@ void print_mesh(TriMesh &mesh){
             mesh.face[i].i[0] << " " <<
             mesh.face[i].i[1] << " " <<
             mesh.face[i].i[2] << " " << std::endl;
-    }
+    }*/
 }
 
 

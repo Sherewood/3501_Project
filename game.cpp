@@ -23,7 +23,7 @@ float camera_far_clip_distance_g = 10000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0, 0, 0);
 //starting position of camera+ camera look at 
-glm::vec3 camera_position_g(580.7216, 70.4653, -1500.982);
+glm::vec3 camera_position_g(0, 70.4653, -0);
 glm::vec3 camera_look_at_g(600.7216, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
@@ -51,6 +51,11 @@ void Game::Init(void){
     // Set variables
     animating_ = true;
     glfwSetCursorPos(window_, 400, 300);
+    for (int i = 0; i < 251; i++) {
+        for (int j = 0; j < 151; j++) {
+            heightMap[i][j] = 100;
+        }
+    }
 
 }
 
@@ -264,6 +269,7 @@ void Game::MainLoop(void){
 
         // Animate the scene
         if (animating_ ){
+            std::cout << camera_.getVelocity() << std::endl;
             //Resets the phases to their original position
             for (int i = 0; i < phases.size(); i++)
             {
@@ -279,6 +285,20 @@ void Game::MainLoop(void){
 
             if ((current_time - last_time) > 0.01 )
 			{
+                if (!noclip) {
+                    // apply effects of gravity
+                    if (camera_.getVelocity() > -20) {
+                        camera_.setVelocity(camera_.getVelocity() - (current_time - last_time) * 9.8); //difference in time *-9.8m/s^2
+                    }
+                    else {
+                        camera_.setVelocity(-20); // cap on negative velocity, just to avoid some weird shenanigans if it becomes too negative somehow
+                    }
+                    camera_.SetPosition(camera_.GetPosition() + glm::vec3(0, camera_.getVelocity(), 0)); //modify position by velocity
+                    if (camera_.GetPosition().y < checkHeightMap()) { //100 as temp, will be related to height map once implemented
+                        camera_.SetPosition(glm::vec3(camera_.GetPosition().x, 100, camera_.GetPosition().z));
+                    }
+                }
+                
                 scene_.Update();
                 bool completion = true; //game variable, used to see if the player has all pages
                 if (display )
@@ -353,6 +373,8 @@ void Game::MainLoop(void){
             
         }
 
+        
+
         // Draw the scene
         //scene_.Draw(&camera_);
         //screen effect
@@ -375,6 +397,27 @@ void Game::MainLoop(void){
     }
 }
 
+float Game::checkHeightMap() {
+    float cameraX = camera_.GetPosition().x/10;
+    float cameraXdecimal = cameraX - std::floor(cameraX);
+    float cameraZ = -camera_.GetPosition().z/10; //negative because game world is from (0,0) to (2500,-1500)
+    float cameraZdecimal = cameraZ - std::floor(cameraZ);
+    float weight = std::sqrt(cameraXdecimal * cameraXdecimal + cameraZdecimal * cameraZdecimal);
+    //remain in the array bounds
+    if (cameraX < 0) cameraX = 0;
+    if (cameraX > 250) cameraX = 250;
+    if (cameraZ < 0) cameraZ = 0;
+    if (cameraZ > 150) cameraZ = 150;
+
+    float cornerValue1 = heightMap[int(std::floor(cameraX))][int(std::floor(cameraZ))];
+    float cornerValue2 = heightMap[int(std::ceil(cameraX))][int(std::ceil(cameraZ))];
+    
+    return cornerValue1 * (1 - weight) + cornerValue2 * weight;
+}
+
+void Game::updateHeightMap(SceneNode* data) {
+
+}
 
 void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
@@ -386,13 +429,12 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_Q && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
-    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
+    // Stop animation if space bar is pressed
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        game->animating_ = (game->animating_ == true) ? false : true;
         game->controlCursor_ = !game->controlCursor_;
     }
-    // Stop animation if space bar is pressed
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
-        game->animating_ = (game->animating_ == true) ? false : true;
-    }
+    if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) game->noclip = !game->noclip; // that's the ` button (tilde without shift)
     SceneNode* halo = game->scene_.GetNode("ParticleInstance"); //dust particles follow the player
     
     // View control
@@ -440,6 +482,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (game->scene_.pause==false)
     { 
+        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+            game->camera_.setVelocity(4);
+        }
         if (key == GLFW_KEY_W) {
             game->camera_.Translate(game->camera_.GetForward() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
@@ -471,9 +516,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             game->camera_.Translate(-game->camera_.GetUp() * trans_factor);
             halo->SetPosition(glm::vec3(game->camera_.GetPosition().x, game->camera_.GetPosition().y + 3, game->camera_.GetPosition().z));
 
-        }
-        if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) {
-            game->controlCursor_ = !game->controlCursor_;
         }
         //Debug DELETE THIS
         if (key == GLFW_KEY_M && action == GLFW_RELEASE) {
@@ -517,15 +559,39 @@ void Game::CursorCallback(GLFWwindow* window, double xpos, double ypos) {
     }
 }
 
+SceneNode* Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
+
+    Resource* geom = resman_.GetResource(object_name);
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* mat = resman_.GetResource(material_name);
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+        }
+    }
+
+    SceneNode* scn = scene_.CreateNode(entity_name, geom, mat, tex);
+    return scn;
+}
 
 void Game::initalizeMap() {
     //inital map
     //OBJECTS LOADING IN
-    game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main factory building
-
-    factory->Scale(glm::vec3(.5, .5, .3));
-    factory->Translate(glm::vec3(-1000, 0,0));
     game::SceneNode* land = CreateInstance("Area1", "Field", "Lighting", "Vine"); //creates the environment where the factory is located 
+    game::SceneNode* factory = CreateInstance("Area1", "Factory", "Lighting", "Steel"); //creates the main factory building
+    factory->Scale(glm::vec3(.5, .5, .3));
+    //factory->Translate(glm::vec3(-1000, 0,0));
+    
+    
     land->Attach(factory, 0);
     game::SceneNode* parking = CreateInstance("parking", "Parking", "Lighting", "Vine");
     parking->Attach(factory, 0);
@@ -533,7 +599,7 @@ void Game::initalizeMap() {
     factor_int->Attach(factory, 0);
     game::SceneNode* factor_int_2 = CreateInstance("interior_2", "Fact_int_2", "Lighting", "YSteel");
     factor_int_2->Attach(factory, 0);
-   game::SceneNode* reactor = CreateInstance("ReactorDetail", "React_detail", "Lighting", "YSteel");
+    game::SceneNode* reactor = CreateInstance("ReactorDetail", "React_detail", "Lighting", "YSteel");
     reactor->Attach(factory, 0);
 
     glm::quat rot = glm::angleAxis(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));

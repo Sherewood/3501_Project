@@ -38,6 +38,10 @@ namespace game {
             void Yaw(float angle);
             void Roll(float angle);
 
+            //getter and setter for velocity
+            float getVelocity();
+            void setVelocity(float velocity);
+
             // Set the view from camera parameters: initial position of camera,
             // point looking at, and up vector
             // Resets the current orientation and position of the camera
@@ -55,6 +59,7 @@ namespace game {
             glm::vec3 side_; // Initial side vector
             glm::mat4 view_matrix_; // View matrix
             glm::mat4 projection_matrix_; // Projection matrix
+            float yVecocity_ = 0; // for gravity and jumping
 
             // Create view matrix from current camera parameters
             void SetupViewMatrix(void);

@@ -103,6 +103,13 @@ void Camera::Roll(float angle){
     orientation_ = glm::normalize(orientation_);
 }
 
+float Camera::getVelocity() {
+    return yVecocity_;
+}
+void Camera::setVelocity(float velocity) {
+    yVecocity_ = velocity;
+}
+
 
 void Camera::SetView(glm::vec3 position, glm::vec3 look_at, glm::vec3 up){
 
