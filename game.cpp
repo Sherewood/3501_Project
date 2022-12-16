@@ -155,7 +155,6 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "DripMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/duststorm");
     resman_.LoadResource(Material, "DustMaterial", filename.c_str());
-    std::cout << "i" << ::std::endl;
 	// LIGTHING
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
 	resman_.LoadResource(Material, "Lighting", filename.c_str());
@@ -202,7 +201,6 @@ void Game::SetupResources(void){
     //MESHES World objects 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/Factory_main.obj");//texture steel
     resman_.LoadResource(Mesh, "Factory", filename.c_str());
-    std::cout << "j" << ::std::endl;
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/grasslands.obj");//texture grasslands
     resman_.LoadResource(Mesh, "Field", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/Meshes/parking terrain.obj");//texture Yellow steel
@@ -263,7 +261,6 @@ void Game::MainLoop(void){
 
         // Animate the scene
         if (animating_ ){
-           // std::cout << camera_.getVelocity() << std::endl;
             //Resets the phases to their original position
             for (int i = 0; i < phases.size(); i++)
             {
@@ -317,14 +314,12 @@ void Game::MainLoop(void){
                         {
                             
                             phase_name = items[i]->lore;
-                            std::cout << phase_name << ::std::endl;
                             items[i]->have = true;
                         }
                     }
                     //if one item is not held, will make the condition false
                     if (!items[i]->have)
                     {
-                       // std::cout << "cabba" << ::std::endl;
                         completion = false;
                     }
                         
@@ -332,13 +327,11 @@ void Game::MainLoop(void){
                 //if all pahes are gotten, sends the key onto the map
                 if (completion)
                 {
-                    std::cout << "zabba" << ::std::endl;
                     scene_.GetNode("Key")->SetPosition(glm::vec3(scene_.GetNode("Key")->GetPosition().x, 50, scene_.GetNode("Key")->GetPosition().z));
                 }
                 //key pickup
                 if (scene_.GetNode("key")->collided(camera_.GetPosition())&& completion)
                 {
-                    std::cout << "wqabba" << ::std::endl;
                     scene_.GetNode("key")->have = true;
                 }
                 game::SceneNode* boar = scene_.GetNode("boar");
@@ -586,7 +579,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (key == GLFW_KEY_M && action == GLFW_RELEASE) {
             std::stringstream ss;
             ss << "X coord :" << game->camera_.GetPosition().x << " Y coord :" << game->camera_.GetPosition().y << " Z coord :" << game->camera_.GetPosition().z;
-            std::cout << ss.str() << std::endl;
         }
         // Screen effect key, will activate the screen effet 
         if (key == GLFW_KEY_Y && action == GLFW_PRESS) {
