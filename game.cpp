@@ -384,21 +384,22 @@ void Game::MainLoop(void){
 }
 
 float Game::checkHeightMap() {
-    float cameraX = camera_.GetPosition().x/10;
+    float cameraX = camera_.GetPosition().x/250;
     float cameraXdecimal = cameraX - std::floor(cameraX);
-    float cameraZ = -camera_.GetPosition().z/10; //negative because game world is from (0,0) to (2500,-1500)
+    float cameraZ = -camera_.GetPosition().z/250; //negative because game world is from (0,0) to (2500,-1500)
     float cameraZdecimal = cameraZ - std::floor(cameraZ);
     float weight = std::sqrt(cameraXdecimal * cameraXdecimal + cameraZdecimal * cameraZdecimal);
     //remain in the array bounds
     if (cameraX < 0) cameraX = 0;
-    if (cameraX > 250) cameraX = 250;
+    if (cameraX > 10) cameraX = 10;
     if (cameraZ < 0) cameraZ = 0;
-    if (cameraZ > 150) cameraZ = 150;
+    if (cameraZ > 6) cameraZ = 6;
 
     float cornerValue1 = heightMap[int(std::floor(cameraX))][int(std::floor(cameraZ))];
     float cornerValue2 = heightMap[int(std::ceil(cameraX))][int(std::ceil(cameraZ))];
+    float returnHeight = cornerValue1 * (1 - weight) + cornerValue2 * weight;
     
-    return cornerValue1 * (1 - weight) + cornerValue2 * weight;
+    return returnHeight;
 }
 
 void Game::createHeightMap() {
