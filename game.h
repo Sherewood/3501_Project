@@ -85,9 +85,9 @@ namespace game {
             static void ResizeCallback(GLFWwindow* window, int width, int height);
 
             //height map creator and checker
-            float heightMap[251][151];
+            float heightMap[11][11];
             float checkHeightMap();
-            void updateHeightMap(SceneNode* data);
+            void createHeightMap();
             
 
             // Asteroid field
