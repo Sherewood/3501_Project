@@ -264,7 +264,7 @@ bool SceneNode::collided(glm::vec3 pos2) {
     glm::vec3 pos1 = position_;
     //compare the distance between them
     //Editor note: Check out how distance is being calculated. The sums are massive and it makes collision difficult. Is there possibly an easier way to do this? with a range of 4000, collision will never proc, but with >5500, the collision happen all the time.
-    //Collision needs to be fixed.
+    
     if (glm::distance(pos1, pos2) < 5400) {
         //if they collide delete the bullet and asteroid
         return true;
