@@ -51,12 +51,7 @@ void Game::Init(void){
     // Set variables
     animating_ = true;
     glfwSetCursorPos(window_, 400, 300);
-    for (int i = 0; i < 251; i++) {
-        for (int j = 0; j < 151; j++) {
-            heightMap[i][j] = 100;
-        }
-    }
-
+    createHeightMap();
 }
 
        
@@ -294,8 +289,8 @@ void Game::MainLoop(void){
                         camera_.setVelocity(-20); // cap on negative velocity, just to avoid some weird shenanigans if it becomes too negative somehow
                     }
                     camera_.SetPosition(camera_.GetPosition() + glm::vec3(0, camera_.getVelocity(), 0)); //modify position by velocity
-                    if (camera_.GetPosition().y < checkHeightMap()) { //100 as temp, will be related to height map once implemented
-                        camera_.SetPosition(glm::vec3(camera_.GetPosition().x, 100, camera_.GetPosition().z));
+                    if (camera_.GetPosition().y < checkHeightMap()+14) { //100 as temp, will be related to height map once implemented
+                        camera_.SetPosition(glm::vec3(camera_.GetPosition().x, checkHeightMap()+14, camera_.GetPosition().z));
                     }
                 }
                 
@@ -406,8 +401,84 @@ float Game::checkHeightMap() {
     return cornerValue1 * (1 - weight) + cornerValue2 * weight;
 }
 
-void Game::updateHeightMap(SceneNode* data) {
-
+void Game::createHeightMap() {
+    heightMap[0][0] = 0.27;
+    heightMap[0][1] = -5.7;
+    heightMap[0][2] = -15.5;
+    heightMap[0][3] = -9.2;
+    heightMap[0][4] = 52;
+    heightMap[0][5] = 120;
+    heightMap[0][6] = 112;
+    heightMap[1][0] = 20;
+    heightMap[1][1] = 10;
+    heightMap[1][2] = -12;
+    heightMap[1][3] = -11;
+    heightMap[1][4] = 47;
+    heightMap[1][5] = 108;
+    heightMap[1][6] = 104;
+    heightMap[2][0] = 42;
+    heightMap[2][1] = 25;
+    heightMap[2][2] = -13;
+    heightMap[2][3] = -10;
+    heightMap[2][4] = 16;
+    heightMap[2][5] = 53;
+    heightMap[2][6] = 69;
+    heightMap[3][0] = 39;
+    heightMap[3][1] = 26;
+    heightMap[3][2] = -8;
+    heightMap[3][3] = -7;
+    heightMap[3][4] = -2;
+    heightMap[3][5] = 23;
+    heightMap[3][6] = 56;
+    heightMap[4][0] = 6;
+    heightMap[4][1] = 8;
+    heightMap[4][2] = -2;
+    heightMap[4][3] = -2;
+    heightMap[4][4] = -2;
+    heightMap[4][5] = 44;
+    heightMap[4][6] = 49;
+    heightMap[5][0] = -35;
+    heightMap[5][1] = -13;
+    heightMap[5][2] = 0;
+    heightMap[5][3] = 0;
+    heightMap[5][4] = -1;
+    heightMap[5][5] = 60;
+    heightMap[5][6] = 44;
+    heightMap[6][0] = -53;
+    heightMap[6][1] = -29;
+    heightMap[6][2] = 0;
+    heightMap[6][3] = 0;
+    heightMap[6][4] = -15;
+    heightMap[6][5] = 29;
+    heightMap[6][6] = 4;
+    heightMap[7][0] = -134;
+    heightMap[7][1] = -85;
+    heightMap[7][2] = -121;
+    heightMap[7][3] = -150;
+    heightMap[7][4] = -50;
+    heightMap[7][5] = 24;
+    heightMap[7][6] = 4;
+    heightMap[8][0] = -171;
+    heightMap[8][1] = -107;
+    heightMap[8][2] = -144;
+    heightMap[8][3] = -160;
+    heightMap[8][4] = -21;
+    heightMap[8][5] = 0;
+    heightMap[8][6] = 0;
+    heightMap[9][0] = -162;
+    heightMap[9][1] = -150;
+    heightMap[9][2] = -150;
+    heightMap[9][3] = 0;
+    heightMap[9][4] = 0;
+    heightMap[9][5] = 0;
+    heightMap[9][6] = 0;
+    heightMap[10][0] = 0;
+    heightMap[10][1] = 0;
+    heightMap[10][2] = 0;
+    heightMap[10][3] = 0;
+    heightMap[10][4] = 0;
+    heightMap[10][5] = 0;
+    heightMap[10][6] = 0;
 }
 
 void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
