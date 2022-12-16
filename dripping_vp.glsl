@@ -23,7 +23,7 @@ uniform vec3 object_color = vec3(0.8, 0.8, 0.8);
 float grav = 0.30; // Gravity
 float speed = 5.00; // Controls the speed of the explosion
 float upward = normalize(5); // additional y velocity for all particles
-float cycle_length =10;
+float cycle_length =50;
 //prof notes: Make the movement more complex(write an equation for the curves), implenet phase in vertex processor,  
 
 void main()

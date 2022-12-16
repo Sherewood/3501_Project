@@ -67,7 +67,8 @@ namespace game {
             std::string lore = "";
             bool projecting = false;
             bool have=false; //boolean to be used whenever a node object is "picked up" by the player
-         
+            //radius
+            float radius = 1000.0f;
 
         private:
             std::string name_; // Name of the scene node
@@ -85,7 +86,7 @@ namespace game {
             glm::vec3 joint; //position where the node rotates on 
             glm::mat4 world_transformation; // value which saves the world_transformation to be used later 
 
-            float radius = 100.0f;
+            
             
 
 
